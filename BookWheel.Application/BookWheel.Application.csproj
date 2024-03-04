@@ -14,11 +14,4 @@
     <ProjectReference Include="..\BookWheel.Domain\BookWheel.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Locations\" />
-    <Folder Include="Users\" />
-    <Folder Include="Reservations\" />
-    <Folder Include="Schedules\" />
-  </ItemGroup>
-
 </Project>

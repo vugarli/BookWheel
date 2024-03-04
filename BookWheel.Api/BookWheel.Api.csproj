@@ -15,4 +15,8 @@
     <ProjectReference Include="..\BookWheel.Application\BookWheel.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>

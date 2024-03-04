@@ -11,6 +11,7 @@ namespace BookWheel.Domain.Entities
         public Guid UserId { get; set; }
 
         public Guid ReservationId { get; set; }
+        public Reservation Reservation { get; set; }
 
         public string? Comment { get; set; }
         public int StarCount { get; set; }

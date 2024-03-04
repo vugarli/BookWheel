@@ -18,5 +18,8 @@ namespace BookWheel.Domain.Entities
         public string Surname { get; set; }
         public string Email { get; set; }
         public ApplicationUserType UserType { get; set; }
+
+        public ICollection<Reservation> Reservations { get; set; }
+
     }
 }

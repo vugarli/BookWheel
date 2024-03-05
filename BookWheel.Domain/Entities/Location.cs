@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace BookWheel.Domain.Entities
 {
+    // value object
     public class Location : BaseEntity
     {
         public Guid OwnerId { get; set; }

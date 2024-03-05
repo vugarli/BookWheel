@@ -12,7 +12,7 @@ namespace BookWheel.Domain.Entities
         Success
     }
 
-
+    // value object
     public class PaymentInfo : BaseEntity
     {
         public Guid UserId { get; set; }

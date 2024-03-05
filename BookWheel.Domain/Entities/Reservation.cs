@@ -24,15 +24,7 @@ namespace BookWheel.Domain.Entities
 
         public ReservationStatus Status { get; set; }
 
-        //public Guid? OwnerRatingId { get; set; }
-        //public Rating? OwnerRating { get; set; }
-
-        //public Guid? CustomerRatingId { get; set; }
-        //public Rating? CustomerRating { get; set; }
-
         public DateTime FinishedAt { get; set; }
         public DateTime CancelledAt { get; set; }
-
-        
     }
 }

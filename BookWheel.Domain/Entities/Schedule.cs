@@ -13,8 +13,10 @@ namespace BookWheel.Domain.Entities
 
         public DateTime ScheduleDate { get; set; }
 
-        public Reservation Reservation { get; set; }
+        public Reservation? Reservation { get; set; }
         public Guid? ReservationId { get; set; }
+
+
 
         public byte[] Version { get; set; } // optimistic lock
     }

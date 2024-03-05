@@ -7,5 +7,12 @@ namespace BookWheel.Api.Controllers
     [ApiController]
     public class SearchController : ControllerBase
     {
+
+        [HttpGet("{query:string}")]
+        public async Task<IActionResult> SearchAsync()
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

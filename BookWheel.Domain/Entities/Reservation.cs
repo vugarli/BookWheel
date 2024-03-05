@@ -14,21 +14,21 @@ namespace BookWheel.Domain.Entities
         OwnerCancelled
     }
 
-    public class Reservation
+    public class Reservation : BaseEntity
     {
         public Guid UserId { get; set; }
-        public ApplicationUser User { get; set; }
+        public CustomerUser User { get; set; }
         
         public Guid ScheduleId { get; set; }
         public Schedule Schedule { get; set; }
 
         public ReservationStatus Status { get; set; }
 
-        public Guid? OwnerRatingId { get; set; }
-        public Rating? OwnerRating { get; set; }
+        //public Guid? OwnerRatingId { get; set; }
+        //public Rating? OwnerRating { get; set; }
 
-        public Guid? CustomerRatingId { get; set; }
-        public Rating? CustomerRating { get; set; }
+        //public Guid? CustomerRatingId { get; set; }
+        //public Rating? CustomerRating { get; set; }
 
         public DateTime FinishedAt { get; set; }
         public DateTime CancelledAt { get; set; }

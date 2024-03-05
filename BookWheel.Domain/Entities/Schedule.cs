@@ -9,8 +9,13 @@ namespace BookWheel.Domain.Entities
     public class Schedule : BaseEntity
     {
         public Guid OwnerId { get; set; }
+        public OwnerUser Owner { get; set; }
+
         public DateTime ScheduleDate { get; set; }
-        public ICollection<Reservation> Reservations { get; set; }
-        public int Version { get; set; } // optimistic lock
+
+        public Reservation Reservation { get; set; }
+        public Guid? ReservationId { get; set; }
+
+        public byte[] Version { get; set; } // optimistic lock
     }
 }

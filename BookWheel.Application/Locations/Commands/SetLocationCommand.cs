@@ -1,18 +1,18 @@
-﻿using NetTopologySuite.Geometries;
+﻿using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookWheel.Domain.Entities
+namespace BookWheel.Application.Locations.Commands
 {
-    public class Location : BaseEntity
+    public class SetLocationCommand 
+        : IRequest
     {
         public Guid OwnerId { get; set; }
-        public OwnerUser Owner { get; set; }
-
-        public Point Coordinates { get; set; }
         public string Name { get; set; }
+        public double Lat { get; set; }
+        public double Long { get; set; }
     }
 }

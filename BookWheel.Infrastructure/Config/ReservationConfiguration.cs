@@ -21,19 +21,19 @@ namespace BookWheel.Infrastructure.Config
 
             builder
                 .HasOne(r => r.Schedule)
-                .WithMany(s => s.Reservations)
-                .HasForeignKey(r => r.ScheduleId)
+                .WithOne(s => s.Reservation)
+                .HasForeignKey<Reservation>(r=>r.ScheduleId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder
-                .HasOne(r => r.CustomerRating)
-                .WithOne(ra => ra.Reservation)
-                .OnDelete(DeleteBehavior.NoAction);
+            //builder
+            //    .HasOne(r => r.CustomerRating)
+            //    .WithOne(ra => ra.Reservation)
+            //    .OnDelete(DeleteBehavior.NoAction);
 
-            builder
-                .HasOne(r => r.OwnerRating)
-                .WithOne(ra => ra.Reservation)
-                .OnDelete(DeleteBehavior.NoAction);
+            //builder
+            //    .HasOne(r => r.OwnerRating)
+            //    .WithOne(ra => ra.Reservation)
+            //    .OnDelete(DeleteBehavior.NoAction);
 
         }
     }

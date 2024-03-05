@@ -7,5 +7,19 @@ namespace BookWheel.Api.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
+
+        [HttpPost]
+        public async Task<IActionResult> CreateUserAsync()
+        { 
+            throw new NotImplementedException();
+        }
+
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> CreateUserAsync(Guid Id)
+        {
+            throw new NotImplementedException();
+        }
+
+
     }
 }

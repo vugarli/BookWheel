@@ -14,4 +14,8 @@
     <ProjectReference Include="..\BookWheel.Domain\BookWheel.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Locations\Queries\" />
+  </ItemGroup>
+
 </Project>

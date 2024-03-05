@@ -10,7 +10,7 @@ namespace BookWheel.Application.Locations.Commands
     public class SetLocationCommandHandler
         : IRequestHandler<SetLocationCommand>
     {
-        public SetLocationCommandHandler(ApplicationDbContext dbContext)
+        public SetLocationCommandHandler()
         {
             
         }

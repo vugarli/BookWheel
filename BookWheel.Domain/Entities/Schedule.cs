@@ -22,6 +22,8 @@ namespace BookWheel.Domain.Entities
 
         public bool IsReserved { get; set; } = false;
 
+
+
         public byte[] Version { get; set; } // optimistic lock
 
         public void Reserve()

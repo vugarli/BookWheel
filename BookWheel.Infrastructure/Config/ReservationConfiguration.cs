@@ -25,16 +25,6 @@ namespace BookWheel.Infrastructure.Config
                 .HasForeignKey<Reservation>(r=>r.ScheduleId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            //builder
-            //    .HasOne(r => r.CustomerRating)
-            //    .WithOne(ra => ra.Reservation)
-            //    .OnDelete(DeleteBehavior.NoAction);
-
-            //builder
-            //    .HasOne(r => r.OwnerRating)
-            //    .WithOne(ra => ra.Reservation)
-            //    .OnDelete(DeleteBehavior.NoAction);
-
         }
     }
 }

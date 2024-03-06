@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace BookWheel.Domain.Entities
 {
-    public class Location : BaseEntity
+    public record Location
     {
-        public Guid OwnerId { get; set; }
-        public OwnerUser Owner { get; set; }
-
         public Point Coordinates { get; set; }
         public string Name { get; set; }
     }

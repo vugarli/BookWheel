@@ -7,18 +7,16 @@ using System.Threading.Tasks;
 namespace BookWheel.Domain.Entities
 {
     public enum PaymentStatus
-    { 
+    {
         Refunded,
-        Success
+        Success,
+        Pending
     }
 
 
-    public class PaymentInfo : BaseEntity
+    public record PaymentDetails
     {
-        public Guid UserId { get; set; }
-        public Guid ReservationId { get; set; }
-
-        public decimal Amount { get; set; }
+        public decimal AmountDue { get; set; }
 
         public PaymentStatus Status { get; set; }
     }

@@ -1,4 +1,5 @@
-﻿using BookWheel.Domain.Entities;
+﻿using BookWheel.Domain.LocationAggregate;
+using BookWheel.Domain.Specifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace BookWheel.Application.Specifications.Schedules
 
     {
         public GetCurrentUserSchedulesSpecification(Guid OwnerId)
-            : base(s=>s.OwnerId == OwnerId)
+            : base(s=>s.LocationId == OwnerId)
         {
 
         }

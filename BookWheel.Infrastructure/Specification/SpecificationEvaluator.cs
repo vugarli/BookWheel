@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BookWheel.Application.Specifications;
 using BookWheel.Domain.Entities;
+using BookWheel.Domain.Specifications;
 using BookWheel.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +18,7 @@ namespace BookWheel.Infrastructure.Specifications
 
         public static IQueryable<T> 
             EvaluateSpecification<T>(Specification<T> specification,IQueryable<T> queryable)
-            where T : BaseEntity
+            where T : class
         {
             if (specification.Criteria is not null)
             {

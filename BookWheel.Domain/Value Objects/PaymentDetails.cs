@@ -12,8 +12,6 @@ namespace BookWheel.Domain.Entities
         Success,
         Pending
     }
-
-
     public record PaymentDetails
     {
         public decimal AmountDue { get; set; }

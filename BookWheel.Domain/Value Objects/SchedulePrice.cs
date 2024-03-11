@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookWheel.Application.Filters
+namespace BookWheel.Domain.Value_Objects
 {
-    public interface IFilter<T>
+    public record SchedulePrice
     {
-        public IQueryable<T> Apply(IQueryable<T> query);
-
+        public decimal Amount { get; set; }
     }
 }

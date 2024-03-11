@@ -23,7 +23,7 @@ namespace BookWheel.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BookWheel.Domain.Entities.ApplicationUser", b =>
+            modelBuilder.Entity("BookWheel.Domain.AggregateRoots.ApplicationUserRoot", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -52,14 +52,14 @@ namespace BookWheel.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ApplicationUser");
+                    b.ToTable("ApplicationUserRoot");
 
                     b.HasDiscriminator<int>("UserType");
 
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("BookWheel.Domain.Entities.Location", b =>
+            modelBuilder.Entity("BookWheel.Domain.LocationAggregate.Location", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -90,7 +90,7 @@ namespace BookWheel.Infrastructure.Migrations
                     b.ToTable("Location");
                 });
 
-            modelBuilder.Entity("BookWheel.Domain.Entities.Reservation", b =>
+            modelBuilder.Entity("BookWheel.Domain.LocationAggregate.Reservation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -108,6 +108,9 @@ namespace BookWheel.Infrastructure.Migrations
                     b.Property<DateTime>("FinishedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("LocationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("ScheduleId")
                         .HasColumnType("uniqueidentifier");
 
@@ -119,6 +122,8 @@ namespace BookWheel.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("LocationId");
+
                     b.HasIndex("ScheduleId")
                         .IsUnique();
 
@@ -127,7 +132,7 @@ namespace BookWheel.Infrastructure.Migrations
                     b.ToTable("Reservation");
                 });
 
-            modelBuilder.Entity("BookWheel.Domain.Entities.Schedule", b =>
+            modelBuilder.Entity("BookWheel.Domain.LocationAggregate.Schedule", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -139,10 +144,10 @@ namespace BookWheel.Infrastructure.Migrations
                     b.Property<DateTime>("DeletedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("OwnerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<bool>("IsReserved")
+                        .HasColumnType("bit");
 
-                    b.Property<Guid?>("ReservationId")
+                    b.Property<Guid>("LocationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ScheduleDate")
@@ -156,80 +161,121 @@ namespace BookWheel.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("LocationId");
 
                     b.ToTable("Schedule");
                 });
 
-            modelBuilder.Entity("BookWheel.Domain.Entities.CustomerUser", b =>
+            modelBuilder.Entity("BookWheel.Domain.AggregateRoots.CustomerUserRoot", b =>
                 {
-                    b.HasBaseType("BookWheel.Domain.Entities.ApplicationUser");
+                    b.HasBaseType("BookWheel.Domain.AggregateRoots.ApplicationUserRoot");
 
                     b.HasDiscriminator().HasValue(1);
                 });
 
-            modelBuilder.Entity("BookWheel.Domain.Entities.OwnerUser", b =>
+            modelBuilder.Entity("BookWheel.Domain.AggregateRoots.OwnerUserRoot", b =>
                 {
-                    b.HasBaseType("BookWheel.Domain.Entities.ApplicationUser");
+                    b.HasBaseType("BookWheel.Domain.AggregateRoots.ApplicationUserRoot");
 
                     b.HasDiscriminator().HasValue(0);
                 });
 
-            modelBuilder.Entity("BookWheel.Domain.Entities.Location", b =>
+            modelBuilder.Entity("BookWheel.Domain.LocationAggregate.Location", b =>
                 {
-                    b.HasOne("BookWheel.Domain.Entities.OwnerUser", "Owner")
-                        .WithOne()
-                        .HasForeignKey("BookWheel.Domain.Entities.Location", "OwnerId")
+                    b.HasOne("BookWheel.Domain.AggregateRoots.OwnerUserRoot", null)
+                        .WithOne("Location")
+                        .HasForeignKey("BookWheel.Domain.LocationAggregate.Location", "OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BookWheel.Domain.LocationAggregate.Reservation", b =>
+                {
+                    b.HasOne("BookWheel.Domain.LocationAggregate.Location", null)
+                        .WithMany("Reservations")
+                        .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("BookWheel.Domain.Entities.Reservation", b =>
-                {
-                    b.HasOne("BookWheel.Domain.Entities.Schedule", "Schedule")
-                        .WithOne("Reservation")
-                        .HasForeignKey("BookWheel.Domain.Entities.Reservation", "ScheduleId")
+                    b.HasOne("BookWheel.Domain.LocationAggregate.Schedule", null)
+                        .WithOne()
+                        .HasForeignKey("BookWheel.Domain.LocationAggregate.Reservation", "ScheduleId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("BookWheel.Domain.Entities.CustomerUser", "User")
+                    b.HasOne("BookWheel.Domain.AggregateRoots.CustomerUserRoot", null)
                         .WithMany("Reservations")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Schedule");
+                    b.OwnsOne("BookWheel.Domain.Entities.PaymentDetails", "PaymentDetails", b1 =>
+                        {
+                            b1.Property<Guid>("ReservationId")
+                                .HasColumnType("uniqueidentifier");
 
-                    b.Navigation("User");
+                            b1.Property<decimal>("AmountDue")
+                                .HasColumnType("decimal(18,2)");
+
+                            b1.Property<int>("Status")
+                                .HasColumnType("int");
+
+                            b1.HasKey("ReservationId");
+
+                            b1.ToTable("Reservation");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ReservationId");
+                        });
+
+                    b.Navigation("PaymentDetails")
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("BookWheel.Domain.Entities.Schedule", b =>
+            modelBuilder.Entity("BookWheel.Domain.LocationAggregate.Schedule", b =>
                 {
-                    b.HasOne("BookWheel.Domain.Entities.OwnerUser", "Owner")
+                    b.HasOne("BookWheel.Domain.LocationAggregate.Location", null)
                         .WithMany("Schedules")
-                        .HasForeignKey("OwnerId")
+                        .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Owner");
-                });
+                    b.OwnsOne("BookWheel.Domain.Value_Objects.SchedulePrice", "SchedulePrice", b1 =>
+                        {
+                            b1.Property<Guid>("ScheduleId")
+                                .HasColumnType("uniqueidentifier");
 
-            modelBuilder.Entity("BookWheel.Domain.Entities.Schedule", b =>
-                {
-                    b.Navigation("Reservation")
+                            b1.Property<decimal>("Amount")
+                                .HasColumnType("decimal(18,2)");
+
+                            b1.HasKey("ScheduleId");
+
+                            b1.ToTable("Schedule");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ScheduleId");
+                        });
+
+                    b.Navigation("SchedulePrice")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BookWheel.Domain.Entities.CustomerUser", b =>
+            modelBuilder.Entity("BookWheel.Domain.LocationAggregate.Location", b =>
+                {
+                    b.Navigation("Reservations");
+
+                    b.Navigation("Schedules");
+                });
+
+            modelBuilder.Entity("BookWheel.Domain.AggregateRoots.CustomerUserRoot", b =>
                 {
                     b.Navigation("Reservations");
                 });
 
-            modelBuilder.Entity("BookWheel.Domain.Entities.OwnerUser", b =>
+            modelBuilder.Entity("BookWheel.Domain.AggregateRoots.OwnerUserRoot", b =>
                 {
-                    b.Navigation("Schedules");
+                    b.Navigation("Location")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

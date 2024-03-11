@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookWheel.Application.Abstractions.Repositories
+namespace BookWheel.Domain
 {
-    public interface IScheduleRepository
+    public interface IAggregateRoot
     {
-
-
     }
 }

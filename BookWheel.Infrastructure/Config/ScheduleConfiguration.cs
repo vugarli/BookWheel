@@ -1,4 +1,4 @@
-﻿using BookWheel.Domain.Entities;
+﻿using BookWheel.Domain.LocationAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -14,15 +14,9 @@ namespace BookWheel.Infrastructure.Config
         public void Configure(EntityTypeBuilder<Schedule> builder)
         {
             builder
-                .HasOne(s => s.Owner)
-                .WithMany(o => o.Schedules)
-                .HasForeignKey(o => o.OwnerId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder
                 .Property(o => o.Version)
                 .IsRowVersion();
-
+            builder.OwnsOne(s=>s.SchedulePrice);
         }
     }
 }

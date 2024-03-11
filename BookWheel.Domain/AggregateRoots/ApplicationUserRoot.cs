@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BookWheel.Domain.Entities;
+using BookWheel.Domain.LocationAggregate;
 
 namespace BookWheel.Domain.AggregateRoots
 {
@@ -13,8 +14,12 @@ namespace BookWheel.Domain.AggregateRoots
         Customer
     }
 
-    public abstract class ApplicationUserRoot : BaseEntity
+    public abstract class ApplicationUserRoot : BaseEntity<Guid>
     {
+        protected ApplicationUserRoot()
+        {
+            
+        }
         protected ApplicationUserRoot
             (
             string name,
@@ -37,6 +42,10 @@ namespace BookWheel.Domain.AggregateRoots
 
     public class CustomerUserRoot : ApplicationUserRoot
     {
+        private CustomerUserRoot()
+        {
+            
+        }
         public CustomerUserRoot
             (
             string name,
@@ -49,21 +58,17 @@ namespace BookWheel.Domain.AggregateRoots
 
         public ICollection<Reservation> Reservations { get; set; }
 
-        public void Reserve(Guid scheduleId)
-        {
-            if (Reservations.Any(r => r.Status == ReservationStatus.Pending))
-                throw new Exception("User already has pending reservation!");
-
-            var newReservation = new Reservation(Id, scheduleId);
-            Reservations.Add(newReservation);
-        }
+        
 
 
     }
 
     public class OwnerUserRoot : ApplicationUserRoot
     {
-
+        private OwnerUserRoot()
+        {
+            
+        }
         public OwnerUserRoot
             (
             string name,
@@ -72,24 +77,7 @@ namespace BookWheel.Domain.AggregateRoots
             ) : base(name, surname, email, ApplicationUserType.Owner)
         {
         }
-
-        public ICollection<Schedule> Schedules { get; set; }
         public Location Location { get; set; }
-
-        public void AddSchedule(DateTime dateTime)
-        {
-
-            if (Schedules
-                .Any(s => s.ScheduleDate == dateTime || dateTime < DateTime.UtcNow))
-                throw new Exception("Invalid date");
-
-            var schedule = new Schedule(Id,dateTime);
-
-            Schedules.Add(schedule);
-        }
-
-
-
     }
 
 

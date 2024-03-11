@@ -1,5 +1,5 @@
-﻿using BookWheel.Application.Filters;
-using BookWheel.Domain.Entities;
+﻿using BookWheel.Domain.Entities;
+using BookWheel.Domain.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +7,10 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookWheel.Application.Specifications
+namespace BookWheel.Domain.Specifications
 {
     public class Specification<T>
-        where T : BaseEntity
+        
     {
         public Expression<Func<T, bool>> Criteria { get; }
 

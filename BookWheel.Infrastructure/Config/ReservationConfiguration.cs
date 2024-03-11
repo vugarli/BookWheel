@@ -1,4 +1,5 @@
-﻿using BookWheel.Domain.Entities;
+﻿using BookWheel.Domain.AggregateRoots;
+using BookWheel.Domain.LocationAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -14,14 +15,16 @@ namespace BookWheel.Infrastructure.Config
         public void Configure(EntityTypeBuilder<Reservation> builder)
         {
             builder
-                .HasOne(r => r.User)
+                .HasOne<CustomerUserRoot>()
                 .WithMany(u => u.Reservations)
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.OwnsOne(r=>r.PaymentDetails);
+
             builder
-                .HasOne(r => r.Schedule)
-                .WithOne(s => s.Reservation)
+                .HasOne<Schedule>()
+                .WithOne()
                 .HasForeignKey<Reservation>(r=>r.ScheduleId)
                 .OnDelete(DeleteBehavior.NoAction);
 

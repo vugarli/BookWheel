@@ -27,7 +27,7 @@ namespace BookWheel.Infrastructure.Config
     {
         public void Configure(EntityTypeBuilder<OwnerUserRoot> builder)
         {
-            builder.OwnsOne(ou=>ou.Location);
+            
         }
     }
 

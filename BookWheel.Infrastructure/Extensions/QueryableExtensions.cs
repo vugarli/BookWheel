@@ -1,4 +1,4 @@
-﻿using BookWheel.Application.Filters;
+﻿using BookWheel.Domain.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;

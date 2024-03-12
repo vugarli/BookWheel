@@ -47,19 +47,17 @@ namespace BookWheel.Domain.AggregateRoots
             
         }
         public CustomerUserRoot
-            (
+            (Guid id,
             string name,
             string surname,
             string email
             ) : base( name, surname, email, ApplicationUserType.Customer )
         {
+            Id = id;
         }
 
 
         public ICollection<Reservation> Reservations { get; set; }
-
-        
-
 
     }
 
@@ -71,11 +69,13 @@ namespace BookWheel.Domain.AggregateRoots
         }
         public OwnerUserRoot
             (
+            Guid id,
             string name,
             string surname,
             string email
             ) : base(name, surname, email, ApplicationUserType.Owner)
         {
+            Id = id;
         }
         public Location Location { get; set; }
     }

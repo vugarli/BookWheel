@@ -1,4 +1,5 @@
-﻿using BookWheel.Domain.Entities;
+﻿using BookWheel.Domain;
+using BookWheel.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -40,11 +41,11 @@ namespace BookWheel.Infrastructure
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-
+            var events = new List<BaseDomainEvent>();
             foreach (var history in this.ChangeTracker.Entries()
-            .Where(e => typeof(e.Entity) == typeof(BaseEntity<>) && (e.State == EntityState.Added ||
+            .Where(e => e.Entity.GetType() == typeof(BaseEntity<>) && (e.State == EntityState.Added ||
                 e.State == EntityState.Modified))
-            .Select(e => e.Entity as BaseEntity<>)
+            .Select(e => e.Entity as IBaseEntity)
             )
             {
                 history.ModifiedAt = DateTime.Now;
@@ -52,14 +53,15 @@ namespace BookWheel.Infrastructure
                 {
                     history.CreatedAt = DateTime.Now;
                 }
+                events.AddRange(history.Events);
             }
 
             var result = await base.SaveChangesAsync(cancellationToken);
             
             // dispatch events
 
-           
-
+            foreach(var domainEvent in events)
+                await _mediator.Publish(domainEvent);
 
             return result;
         }

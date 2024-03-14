@@ -10,7 +10,8 @@ namespace BookWheel.Application.Schedules.Commands.Create
     public record CreateScheduleCommand : IRequest
     {
         public Guid LocationId { get; set; }
-        public DateTime ScheduleDate { get; set; }
+        public DateTime ScheduleDateStart { get; set; }
+        public DateTime ScheduleDateEnd { get; set; }
         public decimal Amount { get; set; }
     }
 }

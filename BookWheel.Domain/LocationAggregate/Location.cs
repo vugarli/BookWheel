@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BookWheel.Domain.LocationAggregate.Extensions;
+using BookWheel.Domain.Events;
 
 namespace BookWheel.Domain.LocationAggregate
 {
@@ -46,6 +47,7 @@ namespace BookWheel.Domain.LocationAggregate
             Guard.Against.DuplicateSchedules(newSchedule,Schedules);
 
             Schedules.Add(newSchedule);
+            Events.Add(new ScheduleCreatedEvent(newSchedule));
         }
 
         public void RemoveSchedule(Schedule schedule)
@@ -54,9 +56,11 @@ namespace BookWheel.Domain.LocationAggregate
             //TODO check for posible reservation
             var scheduleDelete = Schedules.FirstOrDefault(s=>s.Id == schedule.Id);
 
-            if(scheduleDelete is not null)
+            if (scheduleDelete is not null)
+            { 
                 Schedules.Remove(scheduleDelete);
-
+                Events.Add(new ScheduleCreatedEvent(scheduleDelete));
+            }
         }
 
         public void AddReservation(Reservation newReservation)

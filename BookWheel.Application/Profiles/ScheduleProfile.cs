@@ -16,7 +16,16 @@ namespace BookWheel.Application.Profiles
         public ScheduleProfile()
         {
             CreateMap<CreateScheduleCommand, Schedule>()
-                .ConstructUsing(opt=> new Schedule(opt.LocationId,opt.ScheduleDate,new Domain.Value_Objects.SchedulePrice() {Amount = opt.Amount }));
+                .ConstructUsing(opt => 
+                    new Schedule
+                        (
+                        opt.LocationId,
+                        new Domain.Value_Objects.TimeRange(opt.ScheduleDateStart,opt.ScheduleDateEnd),
+                        new Domain.Value_Objects.SchedulePrice() 
+                        {   
+                            Amount = opt.Amount
+                        }
+                        ));
         }
     }
 }

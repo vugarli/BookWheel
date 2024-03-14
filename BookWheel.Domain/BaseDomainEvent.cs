@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BookWheel.Domain
 {
-    public class BaseDomainEvent : INotification
+    public record BaseDomainEvent : INotification
     {
         public DateTime DateOccured { get; protected set; } = DateTime.UtcNow;
     }

@@ -10,9 +10,6 @@ using BookWheel.Domain.Entities;
 namespace BookWheel.Domain.LocationAggregate
 {
     
-
-
-
     public enum ReservationStatus
     {
         Finished,

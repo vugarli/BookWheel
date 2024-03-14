@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BookWheel.Application.Specifications.Locations;
+using BookWheel.Domain;
 using BookWheel.Domain.LocationAggregate;
 using BookWheel.Domain.Repositories;
 using MediatR;
@@ -16,15 +17,18 @@ namespace BookWheel.Application.Schedules.Commands.Create
     {
         public ILocationRepository _locationRepository { get; }
         public IMapper _mapper { get; }
+        public IUnitOfWork _unitOfWork { get; }
 
         public CreateScheduleCommandHandler
             (
             ILocationRepository locationRepository,
-            IMapper mapper
+            IMapper mapper,
+            IUnitOfWork unitOfWork
             )
         {
             _locationRepository = locationRepository;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
 
@@ -39,7 +43,12 @@ namespace BookWheel.Application.Schedules.Commands.Create
 
             var location = await _locationRepository.GetLocationBySpecificationAsync(spec);
 
-            location.
+            if (location is null)
+                throw new Exception("Location not found");
+
+            location.AddSchedule(schedule);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 }

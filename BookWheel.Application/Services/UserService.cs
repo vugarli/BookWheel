@@ -11,10 +11,7 @@ namespace BookWheel.Application.Services
     public interface IUserService
     {
         public Task<bool> CreateOwnerUserAsync(Guid Id, string email);
-
-
     }
-
 
     public class UserService : IUserService
     {

@@ -1,3 +1,4 @@
+using BookWheel.Application;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddApplicationServices();
+
+builder
+    .Services
+    .AddAuthentication()
+    .AddJwtBearer(options=>
+    {
+        
+    });
 
 var app = builder.Build();
 
@@ -19,6 +30,10 @@ if (app.Environment.IsDevelopment())
 app.MapIdentityApi<IdentityUser<Guid>>();
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 
 
 app.Run();

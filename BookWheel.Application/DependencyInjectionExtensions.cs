@@ -1,5 +1,6 @@
 ﻿using BookWheel.Application.Behaviours;
 using BookWheel.Application.Schedules.Commands.Create;
+using BookWheel.Application.Services;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -23,6 +24,8 @@ namespace BookWheel.Application
 
                 c.AddOpenBehavior(typeof(ValidationBehaviour<,>));
             });
+
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
 
             services.AddValidatorsFromAssembly(typeof(CreateScheduleCommand).Assembly);
 

@@ -1,14 +1,11 @@
-﻿using BookWheel.Domain;
+﻿using BookWheel.Application.Auth;
+using BookWheel.Domain;
 using BookWheel.Domain.Repositories;
 using BookWheel.Infrastructure.Identity;
 using BookWheel.Infrastructure.Repositories;
+using BookWheel.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BookWheel.Infrastructure
 {
@@ -19,14 +16,18 @@ namespace BookWheel.Infrastructure
             services.AddDbContext<ApplicationDbContext>();
 
             services.AddDbContext<ApplicationIdentityDbContext>()
-            .AddIdentity<ApplicationIdentityUser, IdentityRole>()
+                .AddIdentity<ApplicationIdentityUser, IdentityRole<Guid>>()
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+            
+            services.AddScoped<ITokenService, TokenService>();
 
             services.AddScoped<ILocationRepository, LocationRepository>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddCustomIdentity();
 
+            services.AddCustomIdentity();
 
             return services;
         }

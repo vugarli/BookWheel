@@ -1,4 +1,5 @@
-﻿using BookWheel.Domain.AggregateRoots;
+﻿using BookWheel.Application.Auth;
+using BookWheel.Domain.AggregateRoots;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace BookWheel.Infrastructure.Identity
 {
-    public class TokenService
+    public class TokenService : ITokenService
     {
 
         private readonly UserManager<ApplicationIdentityUser> _userManager;

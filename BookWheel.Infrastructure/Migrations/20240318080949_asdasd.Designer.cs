@@ -13,8 +13,8 @@ using NetTopologySuite.Geometries;
 namespace BookWheel.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240309140327_init")]
-    partial class init
+    [Migration("20240318080949_asdasd")]
+    partial class asdasd
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,6 +41,9 @@ namespace BookWheel.Infrastructure.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -78,6 +81,9 @@ namespace BookWheel.Infrastructure.Migrations
                     b.Property<DateTime>("DeletedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -113,6 +119,9 @@ namespace BookWheel.Infrastructure.Migrations
 
                     b.Property<Guid>("LocationId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("ScheduleId")
                         .HasColumnType("uniqueidentifier");
@@ -153,7 +162,7 @@ namespace BookWheel.Infrastructure.Migrations
                     b.Property<Guid>("LocationId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("ScheduleDate")
+                    b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<byte[]>("Version")
@@ -259,7 +268,29 @@ namespace BookWheel.Infrastructure.Migrations
                                 .HasForeignKey("ScheduleId");
                         });
 
+                    b.OwnsOne("BookWheel.Domain.Value_Objects.TimeRange", "ScheduleTimeRange", b1 =>
+                        {
+                            b1.Property<Guid>("ScheduleId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<DateTimeOffset>("End")
+                                .HasColumnType("datetimeoffset");
+
+                            b1.Property<DateTimeOffset>("Start")
+                                .HasColumnType("datetimeoffset");
+
+                            b1.HasKey("ScheduleId");
+
+                            b1.ToTable("Schedule");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ScheduleId");
+                        });
+
                     b.Navigation("SchedulePrice")
+                        .IsRequired();
+
+                    b.Navigation("ScheduleTimeRange")
                         .IsRequired();
                 });
 

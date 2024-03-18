@@ -13,7 +13,10 @@ namespace BookWheel.Domain.Value_Objects
         public DateTimeOffset Start { get; private set; }
         public DateTimeOffset End { get; private set; }
 
-
+        private TimeRange()
+        {
+            
+        }
         public TimeRange(DateTimeOffset startDate, DateTimeOffset endDate)
         {
             Guard.Against.EqualDateParts(startDate, endDate);

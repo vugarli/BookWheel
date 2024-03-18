@@ -16,6 +16,9 @@ namespace BookWheel.Infrastructure.Config
             builder
                 .Property(o => o.Version)
                 .IsRowVersion();
+
+            builder.OwnsOne(c => c.ScheduleTimeRange);
+
             builder.OwnsOne(s=>s.SchedulePrice);
         }
     }

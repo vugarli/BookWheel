@@ -17,16 +17,13 @@ namespace BookWheel.Api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly SignInManager<ApplicationIdentityUser> _signInManager;
-        private readonly ITokenService _tokenClaimsService;
         private readonly UserManager<ApplicationIdentityUser> _userManager;
         private readonly IAuthenticationService _authenticationService;
 
         public AuthController(SignInManager<ApplicationIdentityUser> signInManager,
-            ITokenService tokenClaimsService,
             UserManager<ApplicationIdentityUser> userManager, IAuthenticationService authenticationService)
         {
             _signInManager = signInManager;
-            _tokenClaimsService = tokenClaimsService;
             _userManager = userManager;
             _authenticationService = authenticationService;
         }

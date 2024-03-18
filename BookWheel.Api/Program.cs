@@ -65,20 +65,24 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddScoped<ITokenService>();
+builder.Services.AddInfrastructureServices();
 
 builder.Services.AddApplicationServices();
 
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseRouting();
 
+app.MapControllers();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

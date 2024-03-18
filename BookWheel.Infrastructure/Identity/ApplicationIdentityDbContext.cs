@@ -11,7 +11,12 @@ using System.Threading.Tasks;
 namespace BookWheel.Infrastructure.Identity
 {
     public class ApplicationIdentityDbContext 
-        : IdentityDbContext<ApplicationIdentityUser,IdentityRole<Guid>,Guid>
+        : IdentityDbContext
+        <
+            ApplicationIdentityUser,
+            IdentityRole<Guid>,
+            Guid
+        >
     {
 
         private IConfiguration _configuration { get; }
@@ -32,7 +37,6 @@ namespace BookWheel.Infrastructure.Identity
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // override defaults
-
             base.OnModelCreating(builder);
         }
 

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BookWheel.Domain.LocationAggregate.Extensions;
 using BookWheel.Domain.Events;
+using BookWheel.Domain.Exceptions;
 
 namespace BookWheel.Domain.LocationAggregate
 {
@@ -53,14 +54,17 @@ namespace BookWheel.Domain.LocationAggregate
         public void RemoveSchedule(Schedule schedule)
         {
             Guard.Against.Null(schedule);
-            //TODO check for posible reservation
+            
             var scheduleDelete = Schedules.FirstOrDefault(s=>s.Id == schedule.Id);
 
-            if (scheduleDelete is not null)
-            { 
-                Schedules.Remove(scheduleDelete);
-                Events.Add(new ScheduleCreatedEvent(scheduleDelete));
-            }
+            if (scheduleDelete is null)
+                throw new ScheduleNotFoundException();
+            
+            //TODO check for posible reservation
+            
+
+            Schedules.Remove(scheduleDelete);
+            Events.Add(new ScheduleCreatedEvent(scheduleDelete));
         }
 
         public void AddReservation(Reservation newReservation)

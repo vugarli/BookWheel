@@ -13,6 +13,5 @@ namespace BookWheel.Application.Locations
         public string Lat { get; set; }
         public string Long { get; set; }
         public string OwnerName { get; set; }
-        
     }
 }

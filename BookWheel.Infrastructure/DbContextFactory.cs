@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Design;
+﻿using BookWheel.Infrastructure.Identity;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -20,4 +21,20 @@ namespace BookWheel.Infrastructure
             return new ApplicationDbContext(configuration);
         }
     }
+
+    public class IdentityDbContextFactory : IDesignTimeDbContextFactory<ApplicationIdentityDbContext>
+    {
+        public ApplicationIdentityDbContext CreateDbContext(string[] args)
+        {
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+               .SetBasePath(Directory.GetCurrentDirectory())
+               .AddJsonFile("appsettings.json")
+               .Build();
+
+            return new ApplicationIdentityDbContext(configuration);
+        }
+    }
+
+
+
 }

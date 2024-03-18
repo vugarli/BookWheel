@@ -16,13 +16,17 @@ namespace BookWheel.Application
         {
             services.AddMediatR(c =>
             {
-                c.RegisterServicesFromAssembly(typeof(CreateScheduleCommand).Assembly);
+                c.RegisterServicesFromAssemblies
+                (
+                    typeof(CreateScheduleCommand).Assembly
+                );
+
                 c.AddOpenBehavior(typeof(ValidationBehaviour<,>));
             });
 
             services.AddValidatorsFromAssembly(typeof(CreateScheduleCommand).Assembly);
-            services.AddAutoMapper(typeof(CreateScheduleCommand).Assembly);
 
+            services.AddAutoMapper(typeof(CreateScheduleCommand).Assembly);
 
 
             return services;

@@ -17,6 +17,14 @@ namespace BookWheel.Infrastructure
         private IMediator _mediator { get; }
 
         public ApplicationDbContext
+           (
+           IConfiguration configuration
+           )
+        {
+            _configuration = configuration;
+        }
+
+        public ApplicationDbContext
             (
             IConfiguration configuration,
             IMediator mediator
@@ -35,7 +43,6 @@ namespace BookWheel.Infrastructure
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(_configuration.GetConnectionString("MSSQL"),opt=>opt.UseNetTopologySuite());
-            
             base.OnConfiguring(optionsBuilder);
         }
 

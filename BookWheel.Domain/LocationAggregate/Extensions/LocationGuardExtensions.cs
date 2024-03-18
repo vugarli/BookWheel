@@ -1,4 +1,5 @@
 ﻿using Ardalis.GuardClauses;
+using BookWheel.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace BookWheel.Domain.LocationAggregate.Extensions
             )
         {
             if (schedulesList.Any(s => s.ScheduleTimeRange.DoesOverlap(schedule.ScheduleTimeRange)))
-                throw new ArgumentException("New Scheduledate overlaps!");
+                throw new OverlappingScheduleException();
         }
 
         public static void DuplicateSchedules
@@ -28,7 +29,7 @@ namespace BookWheel.Domain.LocationAggregate.Extensions
             )
         {
             if (schedulesList.Any(s => s.Id == schedule.Id))
-                throw new ArgumentException("Dupelicate schedule!");
+                throw new DuplicateScheduleException();
         }
 
 

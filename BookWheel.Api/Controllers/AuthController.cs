@@ -1,6 +1,8 @@
 ﻿using BookWheel.Application.Auth;
 using BookWheel.Application.Services;
 using BookWheel.Infrastructure.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
@@ -19,13 +21,19 @@ namespace BookWheel.Api.Controllers
         private readonly SignInManager<ApplicationIdentityUser> _signInManager;
         private readonly UserManager<ApplicationIdentityUser> _userManager;
         private readonly IAuthenticationService _authenticationService;
+        private readonly ICurrentUserService currentUserService;
 
-        public AuthController(SignInManager<ApplicationIdentityUser> signInManager,
-            UserManager<ApplicationIdentityUser> userManager, IAuthenticationService authenticationService)
+        public AuthController(
+            SignInManager<ApplicationIdentityUser> signInManager,
+            UserManager<ApplicationIdentityUser> userManager,
+            IAuthenticationService authenticationService,
+            ICurrentUserService currentUserService
+            )
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _authenticationService = authenticationService;
+            this.currentUserService = currentUserService;
         }
 
         [HttpPost("login")]
@@ -47,8 +55,10 @@ namespace BookWheel.Api.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<AuthResponse>> Register(
-            [FromBody] RegisterDto registerDto)
+        public async Task<ActionResult<AuthResponse>> Register
+            (
+            [FromBody] RegisterDto registerDto
+            )
         {
             try
             {
@@ -64,6 +74,16 @@ namespace BookWheel.Api.Controllers
                 return BadRequest("Something bad happened, contact support!");
             }
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("info")]
+        public IActionResult GetUserInfo()
+        { 
+            var userId = currentUserService.GetCurrentUserId();
+            return Ok(userId);
+        }
+
+
 
     }
 }

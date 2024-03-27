@@ -10,7 +10,7 @@ namespace BookWheel.Domain.Repositories
     public interface IUserRepository
     {
 
-        public Task<bool> CreateUserAsync(ApplicationUserRoot user);
+        public Task CreateUserAsync(ApplicationUserRoot user);
 
     }
 }

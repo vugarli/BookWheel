@@ -63,20 +63,20 @@ namespace BookWheel.Infrastructure.Services
 
             var result = await _userManager.CreateAsync(identityUser, dto.Password);
 
-            //_authValidator.ValidateRegisterIdentityResult(result);
+            if (result.Succeeded)
+            { 
+                ApplicationUserRoot user = null;
 
-            ApplicationUserRoot user = null;
-
-            if (dto.IsCustomer)
-            {
-                user = new CustomerUserRoot(identityUser.Id, dto.Email, dto.Email, dto.Email);
+                if (dto.IsCustomer)
+                {
+                    user = new CustomerUserRoot(identityUser.Id, dto.Email, dto.Email, dto.Email);
+                }
+                else 
+                {
+                    user = new OwnerUserRoot(identityUser.Id, dto.Email, dto.Email, dto.Email);
+                }
+                await _dbContext.Set<ApplicationUserRoot>().AddAsync(user);
             }
-            else 
-            {
-                user = new OwnerUserRoot(identityUser.Id, dto.Email, dto.Email, dto.Email);
-            }
-
-            await _dbContext.Set<ApplicationUserRoot>().AddAsync(user);
             await _dbContext.SaveChangesAsync();
         }
 

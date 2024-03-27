@@ -11,6 +11,7 @@ namespace BookWheel.Application.Services
     public interface IUserService
     {
         public Task<bool> CreateOwnerUserAsync(Guid Id, string email);
+        public Task<bool> CreateCustomerUserAsync(Guid Id, string email);
     }
 
     public class UserService : IUserService
@@ -21,6 +22,15 @@ namespace BookWheel.Application.Services
         }
 
         public IUserRepository UserRepository { get; }
+
+        public async Task<bool> CreateCustomerUserAsync(Guid Id, string email)
+        {
+            var customer = new CustomerUserRoot(Id, email, email, email);
+            
+            await UserRepository.CreateUserAsync(customer);
+            
+            return true;
+        }
 
         public async Task<bool> CreateOwnerUserAsync(Guid Id,string email)
         {

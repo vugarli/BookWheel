@@ -50,16 +50,27 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddAuthentication(options =>
 {
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
+
+}).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
 {
+    
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(AppConstants.JWTKEY)),
         ValidateIssuer = false,
         ValidateAudience = false
+    };
+}).AddCookie(options =>
+{
+    options.Events.OnRedirectToAccessDenied =
+    options.Events.OnRedirectToLogin = c =>
+    {
+        c.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        return Task.FromResult<object>(null);
     };
 });
 
@@ -87,7 +98,5 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-
 
 app.Run();

@@ -31,7 +31,6 @@ namespace BookWheel.Application
 
             services.AddAutoMapper(typeof(CreateScheduleCommand).Assembly);
 
-
             return services;
         }
 

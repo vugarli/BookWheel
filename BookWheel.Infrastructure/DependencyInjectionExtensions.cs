@@ -1,5 +1,6 @@
 ﻿using BookWheel.Application.Auth;
 using BookWheel.Domain;
+using BookWheel.Domain.Interfaces;
 using BookWheel.Domain.Repositories;
 using BookWheel.Infrastructure.Identity;
 using BookWheel.Infrastructure.Repositories;
@@ -26,6 +27,7 @@ namespace BookWheel.Infrastructure
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IEmailSender, EmailSender>();
 
             services.AddCustomIdentity();
 

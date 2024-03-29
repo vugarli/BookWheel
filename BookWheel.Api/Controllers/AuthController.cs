@@ -1,5 +1,6 @@
 ﻿using BookWheel.Application.Auth;
 using BookWheel.Application.Services;
+using BookWheel.Domain.Interfaces;
 using BookWheel.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -23,17 +24,21 @@ namespace BookWheel.Api.Controllers
         private readonly IAuthenticationService _authenticationService;
         private readonly ICurrentUserService currentUserService;
 
+        public IEmailSender _emailSender { get; }
+
         public AuthController(
             SignInManager<ApplicationIdentityUser> signInManager,
             UserManager<ApplicationIdentityUser> userManager,
             IAuthenticationService authenticationService,
-            ICurrentUserService currentUserService
+            ICurrentUserService currentUserService,
+            IEmailSender emailSender
             )
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _authenticationService = authenticationService;
             this.currentUserService = currentUserService;
+            _emailSender = emailSender;
         }
 
         [HttpPost("login")]
@@ -81,6 +86,13 @@ namespace BookWheel.Api.Controllers
         { 
             var userId = currentUserService.GetCurrentUserId();
             return Ok(userId);
+        }
+
+        [HttpGet("email")]
+        public async Task<IActionResult> Email()
+        {
+            await _emailSender.SendEmailAsync("a@a.com","b@B.com","aa","aa");
+            return Ok();
         }
 
 

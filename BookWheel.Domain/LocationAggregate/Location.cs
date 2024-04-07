@@ -11,6 +11,7 @@ using Ardalis.GuardClauses;
 using BookWheel.Domain.LocationAggregate.Extensions;
 using BookWheel.Domain.Events;
 using BookWheel.Domain.Exceptions;
+using BookWheel.Domain.Value_Objects;
 
 namespace BookWheel.Domain.LocationAggregate
 {
@@ -20,16 +21,21 @@ namespace BookWheel.Domain.LocationAggregate
         public string Name { get; private set; }
         public Guid OwnerId { get; private set; }
         public Point Coordinates { get; private set; }
-
+        public int BoxCount { get; set; } = 1;
+        public TimeOnlyRange WorkingTimeRange { get; set; }
         public List<Reservation> Reservations { get; set; }
-        public List<Schedule> Schedules { get; set; }
+        //public List<Schedule> Schedules { get; set; }
+
+        public byte[] Version { get; set; }
 
         public Location
             (
             string name,
             Guid ownerId,
             double latCoord,
-            double longCoord
+            double longCoord,
+            int boxCount,
+            TimeOnlyRange workingTimeRange
             )
         {
             Name = Guard.Against.NullOrEmpty(name);
@@ -38,42 +44,52 @@ namespace BookWheel.Domain.LocationAggregate
                 (
                 Guard.Against.Default(longCoord),
                 Guard.Against.Default(latCoord)
-                ); ;
+                );
+            BoxCount = boxCount;
+            WorkingTimeRange = workingTimeRange;
         }
 
-        public void AddSchedule(Schedule newSchedule)
+
+        public void AddReservation(
+            Guid userId,
+            TimeRange reservationTimeInterval
+            )
         {
-            Guard.Against.Null(newSchedule);
-            Guard.Against.OverlappingScheduleDates(newSchedule,Schedules);
-            Guard.Against.DuplicateSchedules(newSchedule,Schedules);
+            Guard.Against.OutOfBusinessHours(reservationTimeInterval, this);
 
-            Schedules.Add(newSchedule);
-            Events.Add(new ScheduleCreatedEvent(newSchedule));
+            var overlappingReservations = GetOverlappingReservations(reservationTimeInterval);
+
+            if (overlappingReservations.Count() != 0)
+            {
+                if (overlappingReservations.Select(r => r.BoxNumber).Distinct().Count() == BoxCount)
+                    throw new Exception("Not available");
+
+                var newBoxNumber = overlappingReservations.Select(r => r.BoxNumber).Max() + 1;
+
+                Reservation newReservation = new Reservation(userId, reservationTimeInterval, Id, newBoxNumber);
+
+                Reservations.Add(newReservation);
+            }
+            else
+            {
+                Reservation newReservation = new Reservation(userId, reservationTimeInterval, Id, 1);
+                Reservations.Add(newReservation);
+            }
+
+            // event add
         }
 
-        public void RemoveSchedule(Schedule schedule)
+
+
+        public bool DoesOverlapsReservation(Reservation reservation)
         {
-            Guard.Against.Null(schedule);
-            
-            var scheduleDelete = Schedules.FirstOrDefault(s=>s.Id == schedule.Id);
-
-            if (scheduleDelete is null)
-                throw new ScheduleNotFoundException();
-            
-            //TODO check for posible reservation
-            
-
-            Schedules.Remove(scheduleDelete);
-            Events.Add(new ScheduleCreatedEvent(scheduleDelete));
+            return Reservations.Any(r => r.BoxNumber == reservation.BoxNumber && r.ReservationTimeInterval.DoesOverlap(reservation.ReservationTimeInterval));
         }
 
-        public void AddReservation(Reservation newReservation)
+        public List<Reservation> GetOverlappingReservations(TimeRange reservationInterval)
         { 
-            
+            return Reservations.Where(r => r.ReservationTimeInterval.DoesOverlap(reservationInterval)).ToList();
         }
-
-
-
 
     }
 }

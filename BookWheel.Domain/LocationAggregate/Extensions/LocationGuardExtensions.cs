@@ -1,5 +1,7 @@
 ﻿using Ardalis.GuardClauses;
 using BookWheel.Domain.Exceptions;
+using BookWheel.Domain.Value_Objects;
+using NetTopologySuite.LinearReferencing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,27 +12,54 @@ namespace BookWheel.Domain.LocationAggregate.Extensions
 {
     public static class LocationGuardExtensions
     {
-        public static void OverlappingScheduleDates
+
+        public static void OverlappingReservations
             (
             this IGuardClause guardClause,
-            Schedule schedule,
-            List<Schedule> schedulesList
+            Reservation reservation,
+            Location location
             )
         {
-            if (schedulesList.Any(s => s.ScheduleTimeRange.DoesOverlap(schedule.ScheduleTimeRange)))
-                throw new OverlappingScheduleException();
+
+            if (
+                location.DoesOverlapsReservation(reservation)
+                )
+                throw new Exception("Overlapping reservations!");
         }
 
-        public static void DuplicateSchedules
+        public static void OutOfBusinessHours
             (
             this IGuardClause guardClause,
-            Schedule schedule,
-            List<Schedule> schedulesList
+            TimeRange timeRange,
+            Location location
             )
         {
-            if (schedulesList.Any(s => s.Id == schedule.Id))
-                throw new DuplicateScheduleException();
+            if (!location.WorkingTimeRange.DoesOverlap(timeRange))
+                throw new Exception("Reservation is out of business hours!");
         }
+
+
+        //public static void OverlappingScheduleDates
+        //    (
+        //    this IGuardClause guardClause,
+        //    Schedule schedule,
+        //    List<Schedule> schedulesList
+        //    )
+        //{
+        //    if (schedulesList.Any(s => s.ScheduleTimeRange.DoesOverlap(schedule.ScheduleTimeRange)))
+        //        throw new OverlappingScheduleException();
+        //}
+
+        //public static void DuplicateSchedules
+        //    (
+        //    this IGuardClause guardClause,
+        //    Schedule schedule,
+        //    List<Schedule> schedulesList
+        //    )
+        //{
+        //    if (schedulesList.Any(s => s.Id == schedule.Id))
+        //        throw new DuplicateScheduleException();
+        //}
 
 
     }

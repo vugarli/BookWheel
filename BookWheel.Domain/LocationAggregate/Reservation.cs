@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BookWheel.Domain.AggregateRoots;
 using BookWheel.Domain.Entities;
+using BookWheel.Domain.Value_Objects;
 
 namespace BookWheel.Domain.LocationAggregate
 {
@@ -20,28 +21,29 @@ namespace BookWheel.Domain.LocationAggregate
 
     public class Reservation : BaseEntity<Guid>
     {
-        private Reservation()
-        {
-            
-        }
+        private Reservation() { }
         public Reservation
             (
             Guid userId,
-            Guid scheduleId,
-            Guid locationId
+            TimeRange reservationTimeInterval,
+            Guid locationId,
+            int boxNumber
             )
         {
             UserId = Guard.Against.Default(userId);
-            ScheduleId = Guard.Against.Default(scheduleId);
+            ReservationTimeInterval = Guard.Against.Default(reservationTimeInterval);
             LocationId = Guard.Against.Default(locationId);
+            BoxNumber = boxNumber;
             Status = ReservationStatus.Pending;
         }
 
         public PaymentDetails PaymentDetails { get; set; }
 
+        public int BoxNumber { get; set; }
+
         public Guid UserId { get; private set; }
 
-        public Guid ScheduleId { get; private set; }
+        public TimeRange ReservationTimeInterval { get; private set; }
         public Guid LocationId { get; set; }
 
         public ReservationStatus Status { get; private set; }

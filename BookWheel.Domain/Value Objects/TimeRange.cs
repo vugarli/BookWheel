@@ -25,7 +25,7 @@ namespace BookWheel.Domain.Value_Objects
             Start = startDate;
             End = endDate;
         }
-
+        
 
         public TimeRange(DateTimeOffset start, TimeSpan duration)
         : this(start, start.Add(duration))

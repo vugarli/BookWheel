@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BookWheel.Domain.LocationAggregate.Extensions;
-using BookWheel.Domain.Events;
+
 using BookWheel.Domain.Exceptions;
 using BookWheel.Domain.Value_Objects;
 
@@ -56,17 +56,24 @@ namespace BookWheel.Domain.LocationAggregate
             )
         {
             Guard.Against.OutOfBusinessHours(reservationTimeInterval, this);
-
+            
             var overlappingReservations = GetOverlappingReservations(reservationTimeInterval);
 
             if (overlappingReservations.Count() != 0)
             {
                 if (overlappingReservations.Select(r => r.BoxNumber).Distinct().Count() == BoxCount)
-                    throw new Exception("Not available");
+                    throw new ReservationOverlapsException();
 
                 var newBoxNumber = overlappingReservations.Select(r => r.BoxNumber).Max() + 1;
 
-                Reservation newReservation = new Reservation(userId, reservationTimeInterval, Id, newBoxNumber);
+                Reservation newReservation = 
+                    new Reservation
+                    (
+                        userId,
+                        reservationTimeInterval,
+                        Id,
+                        newBoxNumber
+                    );
 
                 Reservations.Add(newReservation);
             }

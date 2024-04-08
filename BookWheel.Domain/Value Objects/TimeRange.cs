@@ -25,12 +25,12 @@ namespace BookWheel.Domain.Value_Objects
             Start = startDate;
             End = endDate;
         }
-        
+
+        public TimeRange(string start,string end)
+            : this(DateTime.Parse(start),DateTime.Parse(end)) { }
 
         public TimeRange(DateTimeOffset start, TimeSpan duration)
-        : this(start, start.Add(duration))
-        {
-        }
+        : this(start, start.Add(duration)) { }
 
         public bool DoesOverlap(TimeRange timeRange)
         {
@@ -44,7 +44,6 @@ namespace BookWheel.Domain.Value_Objects
 
     }
 
-
     public static class TimeRangeGuardExtensions
     {
         public static void EqualDateParts
@@ -55,7 +54,7 @@ namespace BookWheel.Domain.Value_Objects
             )
         {
             if (start.Date != end.Date)
-                throw new ArgumentException("Timerange dates should be same!"); 
+                throw new Exception("Timerange dates should be same!"); 
         }
 
         

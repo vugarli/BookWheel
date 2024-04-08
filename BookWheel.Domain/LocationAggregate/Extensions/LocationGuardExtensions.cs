@@ -34,8 +34,11 @@ namespace BookWheel.Domain.LocationAggregate.Extensions
             Location location
             )
         {
-            if (!location.WorkingTimeRange.DoesOverlap(timeRange))
-                throw new Exception("Reservation is out of business hours!");
+            var reservationStart = TimeOnly.FromDateTime(timeRange.Start.DateTime);
+            var reservationEnd = TimeOnly.FromDateTime(timeRange.End.DateTime);
+
+            if (reservationStart < location.WorkingTimeRange.Start || reservationEnd > location.WorkingTimeRange.End)
+                throw new ReservationOutOfBusinessHoursException();
         }
 
 

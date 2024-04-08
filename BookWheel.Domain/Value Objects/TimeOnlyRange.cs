@@ -23,6 +23,10 @@ namespace BookWheel.Domain.Value_Objects
             End = endTime;
         }
 
+        public TimeOnlyRange(string start,string end)
+            :this(TimeOnly.Parse(start),TimeOnly.Parse(end))
+        {
+        }
 
         public TimeOnlyRange(TimeOnly start, TimeSpan duration)
         : this(start, start.Add(duration))

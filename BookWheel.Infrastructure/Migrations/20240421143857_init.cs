@@ -7,7 +7,7 @@ using NetTopologySuite.Geometries;
 namespace BookWheel.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class asdasd : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -38,6 +38,10 @@ namespace BookWheel.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Coordinates = table.Column<Point>(type: "geography", nullable: false),
+                    BoxCount = table.Column<int>(type: "int", nullable: false),
+                    WorkingTimeRange_Start = table.Column<TimeOnly>(type: "time", nullable: false),
+                    WorkingTimeRange_End = table.Column<TimeOnly>(type: "time", nullable: false),
+                    Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -54,40 +58,16 @@ namespace BookWheel.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Schedule",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ScheduleTimeRange_Start = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    ScheduleTimeRange_End = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    IsReserved = table.Column<bool>(type: "bit", nullable: false),
-                    Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
-                    SchedulePrice_Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Schedule", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Schedule_Location_LocationId",
-                        column: x => x.LocationId,
-                        principalTable: "Location",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Reservation",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PaymentDetails_AmountDue = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PaymentDetails_Status = table.Column<int>(type: "int", nullable: false),
+                    BoxNumber = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ScheduleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ReservationTimeInterval_Start = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    ReservationTimeInterval_End = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     FinishedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -111,10 +91,36 @@ namespace BookWheel.Infrastructure.Migrations
                         principalTable: "Location",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Service",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MinuteDuration = table.Column<int>(type: "int", nullable: false),
+                    ReservationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Service", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reservation_Schedule_ScheduleId",
-                        column: x => x.ScheduleId,
-                        principalTable: "Schedule",
+                        name: "FK_Service_Location_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Location",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Service_Reservation_ReservationId",
+                        column: x => x.ReservationId,
+                        principalTable: "Reservation",
                         principalColumn: "Id");
                 });
 
@@ -130,30 +136,29 @@ namespace BookWheel.Infrastructure.Migrations
                 column: "LocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservation_ScheduleId",
-                table: "Reservation",
-                column: "ScheduleId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Reservation_UserId",
                 table: "Reservation",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Schedule_LocationId",
-                table: "Schedule",
+                name: "IX_Service_LocationId",
+                table: "Service",
                 column: "LocationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Service_ReservationId",
+                table: "Service",
+                column: "ReservationId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Reservation");
+                name: "Service");
 
             migrationBuilder.DropTable(
-                name: "Schedule");
+                name: "Reservation");
 
             migrationBuilder.DropTable(
                 name: "Location");

@@ -14,7 +14,10 @@ namespace BookWheel.Domain.Value_Objects
         public TimeOnly Start{ get; set; }
         public TimeOnly End{ get; set; }
 
-
+private TimeOnlyRange()
+{
+    
+}
         public TimeOnlyRange(TimeOnly startTime, TimeOnly endTime)
         {
             Guard.Against.OutOfRange(startTime, "start", startTime, endTime);

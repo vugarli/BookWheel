@@ -1,16 +1,10 @@
 ﻿using BookWheel.Application.Services;
 using BookWheel.Application.Specifications.Locations;
 using BookWheel.Domain;
-using BookWheel.Domain.LocationAggregate;
 using BookWheel.Domain.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BookWheel.Application.Reservations.Commands
+namespace BookWheel.Application.Reservations.Commands.Create
 {
     public class CreateReservationCommandHandler
         : IRequestHandler<CreateReservationCommand>
@@ -40,11 +34,15 @@ namespace BookWheel.Application.Reservations.Commands
             if (location is null)
                 throw new Exception("Location is not found");
 
-            var userId = _currentUserService.GetCurrentUserId();
-            Guid.TryParse(userId, out Guid userIdG);
+            var services = location.Services.Where(s => request.ServiceIds.Contains(s.Id)).ToList();
 
-            var reservation = new Reservation(userIdG,request.ScheduleId,request.LocationId);
-            location.AddReservation(reservation);
+            if (services.Count() != request.ServiceIds.Count())
+                throw new Exception("Service not found!");
+            
+            var userIdStr = _currentUserService.GetCurrentUserId();
+            Guid.TryParse(userIdStr, out Guid userId);
+            
+            location.AddReservation(userId,services,request.StartDate);
             
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }

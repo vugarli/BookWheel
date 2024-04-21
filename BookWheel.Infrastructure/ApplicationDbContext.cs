@@ -16,6 +16,13 @@ namespace BookWheel.Infrastructure
         private IConfiguration _configuration { get; }
         private IMediator _mediator { get; }
 
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IMediator mediator)
+            : base(options)
+        {
+            _mediator = mediator;
+        }
+
+        
         public ApplicationDbContext
            (
            IConfiguration configuration
@@ -40,11 +47,11 @@ namespace BookWheel.Infrastructure
             base.OnModelCreating(modelBuilder);
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(_configuration.GetConnectionString("MSSQL"),opt=>opt.UseNetTopologySuite());
-            base.OnConfiguring(optionsBuilder);
-        }
+        // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        // {
+        //     optionsBuilder.UseSqlServer(_configuration.GetConnectionString("MSSQL"),opt=>opt.UseNetTopologySuite());
+        //     base.OnConfiguring(optionsBuilder);
+        // }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

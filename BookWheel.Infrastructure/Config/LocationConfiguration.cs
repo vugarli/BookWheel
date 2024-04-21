@@ -25,9 +25,16 @@ namespace BookWheel.Infrastructure.Config
                 .HasForeignKey<Location>(c=>c.OwnerId);
 
             builder
+                .HasMany(l => l.Services)
+                .WithOne()
+                .HasForeignKey(s=>s.LocationId);
+            
+            builder
                 .HasMany(l => l.Reservations)
                 .WithOne()
                 .HasForeignKey(r=>r.LocationId);
+
+            builder.OwnsOne(l => l.WorkingTimeRange);
 
         }
     }

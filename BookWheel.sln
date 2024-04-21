@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookWheel.Application", "Bo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookWheel.UnitTests", "BookWheel.UnitTests\BookWheel.UnitTests.csproj", "{36C744D5-08BC-4D05-9088-7174254175F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookWheel.IntegrationTests", "BookWheel.IntegrationTests\BookWheel.IntegrationTests.csproj", "{1C772396-41F9-418F-AC42-B9B70B339274}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{36C744D5-08BC-4D05-9088-7174254175F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36C744D5-08BC-4D05-9088-7174254175F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36C744D5-08BC-4D05-9088-7174254175F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C772396-41F9-418F-AC42-B9B70B339274}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C772396-41F9-418F-AC42-B9B70B339274}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C772396-41F9-418F-AC42-B9B70B339274}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C772396-41F9-418F-AC42-B9B70B339274}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

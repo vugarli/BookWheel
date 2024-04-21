@@ -1,5 +1,4 @@
 ﻿using BookWheel.Application.Behaviours;
-using BookWheel.Application.Schedules.Commands.Create;
 using BookWheel.Application.Services;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BookWheel.Application.Reservations.Commands;
+using BookWheel.Application.Reservations.Commands.Create;
 
 namespace BookWheel.Application
 {
@@ -19,7 +20,7 @@ namespace BookWheel.Application
             {
                 c.RegisterServicesFromAssemblies
                 (
-                    typeof(CreateScheduleCommand).Assembly
+                    typeof(CreateReservationCommand).Assembly
                 );
 
                 c.AddOpenBehavior(typeof(ValidationBehaviour<,>));
@@ -27,9 +28,9 @@ namespace BookWheel.Application
 
             services.AddScoped<ICurrentUserService, CurrentUserService>();
 
-            services.AddValidatorsFromAssembly(typeof(CreateScheduleCommand).Assembly);
+            services.AddValidatorsFromAssembly(typeof(CreateReservationCommand).Assembly);
 
-            services.AddAutoMapper(typeof(CreateScheduleCommand).Assembly);
+            services.AddAutoMapper(typeof(CreateReservationCommand).Assembly);
 
             return services;
         }

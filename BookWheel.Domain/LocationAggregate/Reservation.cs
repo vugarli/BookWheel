@@ -24,21 +24,28 @@ namespace BookWheel.Domain.LocationAggregate
         private Reservation() { }
         public Reservation
             (
+            Guid id,
             Guid userId,
             TimeRange reservationTimeInterval,
             Guid locationId,
-            int boxNumber
+            int boxNumber,
+            List<Service> services
             )
         {
+            Id = id;
             UserId = Guard.Against.Default(userId);
             ReservationTimeInterval = Guard.Against.Default(reservationTimeInterval);
             LocationId = Guard.Against.Default(locationId);
             BoxNumber = boxNumber;
             Status = ReservationStatus.Pending;
+            Services = services;
+
+            PaymentDetails = new PaymentDetails(services.Sum(s=>s.Price));
         }
 
         public PaymentDetails PaymentDetails { get; set; }
 
+        public List<Service> Services { get; set; }
         public int BoxNumber { get; set; }
 
         public Guid UserId { get; private set; }
@@ -55,6 +62,11 @@ namespace BookWheel.Domain.LocationAggregate
         {
             Status = ReservationStatus.OwnerCancelled;
             CancelledAt = DateTime.UtcNow;
+        }
+
+        public bool IsActive()
+        {
+            return Status == ReservationStatus.Pending;
         }
 
         public void CustomerCancelReservation()

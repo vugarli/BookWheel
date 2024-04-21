@@ -25,8 +25,8 @@ namespace BookWheel.UnitTests.Domain.LocationAggregate.TimeRangeTests
         [Fact]
         public void TimeRangeThrowsExceptionWhenNotValidStartEndOrder()
         {
-            var start = DateTime.Now.AddHours(1);
-            var end = DateTime.Now;
+            var start = DateTime.Parse("2023-03-03 02:00");
+            var end = DateTime.Parse("2023-03-03 01:00");
 
             void Action() => new TimeRange(start, end);
 

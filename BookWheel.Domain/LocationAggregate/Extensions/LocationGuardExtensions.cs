@@ -13,6 +13,26 @@ namespace BookWheel.Domain.LocationAggregate.Extensions
     public static class LocationGuardExtensions
     {
 
+        public static void DuplicateService(
+            this IGuardClause guardClause,
+            IEnumerable<Service> services)
+        {
+            if (services.Count() != services.Distinct().Count())
+            {
+                throw new DuplicateServiceException();
+            }
+        }
+        public static void ServiceDoesNotExist(
+            this IGuardClause guardClause,
+            Location location,
+            IEnumerable<Service> services)
+        {
+            if (!services.All(s => location.Services.Any(ls => ls.Id == s.Id)))
+            {
+                throw new ServiceDoesNotExistException();
+            }
+        }
+
         public static void OverlappingReservations
             (
             this IGuardClause guardClause,

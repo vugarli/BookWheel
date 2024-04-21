@@ -5,29 +5,30 @@ using BookWheel.UnitTests.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Authentication.ExtendedProtection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BookWheel.UnitTests.Domain.LocationAggregate.ReservationTests
 {
-    public class Reservation_Create
+    public class Reservation_Create : IClassFixture<LocationContext>
     {
+        public LocationContext LocationContext { get; set; }
 
-        public Location Location { get; init; }
-
-        public TimeOnlyRange WorkingHours = new TimeOnlyRange(TimeOnly.FromDateTime(DateTime.Now), TimeOnly.FromDateTime(DateTime.Now.AddHours(4)));
-
-        public Reservation_Create()
+        public Reservation_Create(LocationContext locationContext)
         {
-            Location = new Location("Location", Guid.NewGuid(), 34.56, 23.34, 2, WorkingHours);
+            LocationContext = locationContext;
         }
 
         [Fact]
         public void ThrowsExceptionOutOfBusinessHours()
         {
-            var reservationInterval = new TimeRange(DateTimeOffset.Now, DateTimeOffset.Now.AddHours(5));
-
-            void Action() => Location.AddReservation(Guid.NewGuid(), reservationInterval);
+            var location = LocationContext.GetLocation(1, "09:00", "18:00");
+            void Action() => location
+                .AddReservation(
+                    Guid.NewGuid(),
+                    LocationContext.Get30MinServices(),
+                    DateTimeOffset.Parse("2023-03-03 19:00"));
 
             Assert.Throws<ReservationOutOfBusinessHoursException>(Action);
         }
@@ -39,15 +40,14 @@ namespace BookWheel.UnitTests.Domain.LocationAggregate.ReservationTests
         [InlineData(3)]
         public void ThrowsExceptionIfReservationOverlaps_WithBoxCounts(int boxCount)
         {
-            var location = new Location("LocationA",Guid.NewGuid(),34.34,34.23,boxCount,new TimeOnlyRange("01:00","23:59"));
-
-            TimeRange[] reservationRanges = ReservationTimeRangeProvider.GetOverlappingReservationTimeRangesForBoxCount(boxCount);
+            var location = LocationContext.GetLocation(boxCount,"01:00","23:59"); 
             
             void Action() 
             {
-                foreach (var reservationRange in reservationRanges)
+                foreach (var _ in Enumerable.Range(1,boxCount))
+                foreach ((DateTimeOffset startDate,IEnumerable<Service> services) in LocationContext.GetConflictingReservations())
                 { 
-                    location.AddReservation(Guid.NewGuid(),reservationRange);
+                    location.AddReservation(Guid.NewGuid(),services.ToList(),startDate);
                 }
             }; 
 
@@ -60,21 +60,53 @@ namespace BookWheel.UnitTests.Domain.LocationAggregate.ReservationTests
         [InlineData(3)]
         public void DoesNotThrowExceptionIfReservationDoesNotOverlap_WithBoxCounts(int boxCount)
         {
-            var location = new Location("LocationA", Guid.NewGuid(), 34.34, 34.23, boxCount, new TimeOnlyRange("01:00", "23:59"));
+            var location = LocationContext.GetLocation(boxCount,"01:00","23:59");
 
-            TimeRange[] reservationRanges = ReservationTimeRangeProvider.GetNonOverlappingReservationTimeRangesForBoxCount(boxCount);
-
-            void Action()
+            void Action() 
             {
-                foreach (var reservationRange in reservationRanges)
-                {
-                    location.AddReservation(Guid.NewGuid(), reservationRange);
+                foreach (var _ in Enumerable.Range(1,boxCount))
+                foreach ((DateTimeOffset startDate,IEnumerable<Service> services) in LocationContext.GetNonConflictingReservations())
+                { 
+                    location.AddReservation(Guid.NewGuid(),services.ToList(),startDate);
                 }
-            };
+            }; 
 
             var exception = Record.Exception(Action);
             Assert.Null(exception);
         }
+
+        [Fact]
+        public void ThrowsExceptionWhenProvidedDuplicateServices()
+        {
+            var location = LocationContext.GetLocation(1,"01:00","23:59"); 
+            
+            void Action() 
+            {
+                foreach ((DateTimeOffset startDate,IEnumerable<Service> services) in LocationContext.GetReservationWithDuplicateServices())
+                { 
+                    location.AddReservation(Guid.NewGuid(),services.ToList(),startDate);
+                }
+            }; 
+
+            Assert.Throws<DuplicateServiceException>(Action);
+        }
+        
+        [Fact]
+        public void ThrowsExceptionWhenProvidedNonExistentServices()
+        {
+            var location = LocationContext.GetLocation(1,"01:00","23:59"); 
+            
+            void Action() 
+            {
+                foreach ((DateTimeOffset startDate,IEnumerable<Service> services) in LocationContext.GetReservationWithNonExistentServices())
+                { 
+                    location.AddReservation(Guid.NewGuid(),services.ToList(),startDate);
+                }
+            }; 
+
+            Assert.Throws<ServiceDoesNotExistException>(Action);
+        }
+
 
     }
 }

@@ -44,11 +44,16 @@ namespace BookWheel.Domain.LocationAggregate
             Id = id;
             Name = Guard.Against.NullOrEmpty(name);
             OwnerId = Guard.Against.Default(ownerId);
-            Coordinates = new Point
-                (
-                Guard.Against.Default(longCoord),
-                Guard.Against.Default(latCoord)
-                );
+            // Coordinates = new Point
+            //     (
+            //     Guard.Against.Default(longCoord),
+            //     Guard.Against.Default(latCoord)
+            //     );
+            var gf = NetTopologySuite.NtsGeometryServices.Instance.CreateGeometryFactory(4326);
+
+            // Create a point at Aurich (lat=53.4837, long=7.5404)
+            Coordinates = gf.CreatePoint(new NetTopologySuite.Geometries.Coordinate(7.5404, 53.4837));
+            
             BoxCount = boxCount;
             WorkingTimeRange = workingTimeRange;
         }

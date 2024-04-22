@@ -1,7 +1,7 @@
 ﻿using BookWheel.Application.Services;
-using BookWheel.Application.Specifications.Locations;
 using BookWheel.Domain;
 using BookWheel.Domain.Repositories;
+using BookWheel.Domain.Specifications.Location;
 using MediatR;
 
 namespace BookWheel.Application.Reservations.Commands.Create

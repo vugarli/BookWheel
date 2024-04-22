@@ -14,7 +14,8 @@ namespace BookWheel.Infrastructure.Repositories
     public class UserRepository : IUserRepository
     {
         public ApplicationDbContext _dbContext { get; }
-        public IQueryable<CustomerUserRoot> Queryable { get => _dbContext.Set<CustomerUserRoot>(); }
+        public IQueryable<CustomerUserRoot> CustomerQueryable { get => _dbContext.Set<CustomerUserRoot>(); }
+        public IQueryable<OwnerUserRoot> OwnerQueryable { get => _dbContext.Set<OwnerUserRoot>(); }
         public UserRepository
             (
             ApplicationDbContext dbContext
@@ -30,9 +31,15 @@ namespace BookWheel.Infrastructure.Repositories
 
         public async Task<CustomerUserRoot?> GetCustomerBySpecificationAsync
         (
-            BookWheel.Domain.Specifications.Specification<CustomerUserRoot> spec
+            Specification<CustomerUserRoot> spec
         )
-            => await Queryable.ApplySpecification(spec).FirstOrDefaultAsync();
+            => await CustomerQueryable.ApplySpecification(spec).FirstOrDefaultAsync();
+        
+        public async Task<OwnerUserRoot?> GetOwnerBySpecificationAsync
+        (
+            Specification<OwnerUserRoot> spec
+        )
+            => await OwnerQueryable.ApplySpecification(spec).FirstOrDefaultAsync();
         
 
         public async Task CreateCustomerAsync(CustomerUserRoot user)

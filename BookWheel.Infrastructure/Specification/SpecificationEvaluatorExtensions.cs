@@ -1,10 +1,9 @@
-﻿using BookWheel.Domain.Specifications;
-using BookWheel.Infrastructure.Specifications;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BookWheel.Domain;
 
 namespace BookWheel.Infrastructure.Specification
 {

@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BookWheel.Application.Specifications;
-using BookWheel.Domain.Entities;
-using BookWheel.Domain.Specifications;
+﻿using BookWheel.Domain;
 using BookWheel.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 
-
-namespace BookWheel.Infrastructure.Specifications
+namespace BookWheel.Infrastructure.Specification
 {
     public static class SpecificationEvaluator
     {

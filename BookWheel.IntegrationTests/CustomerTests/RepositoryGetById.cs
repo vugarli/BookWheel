@@ -1,4 +1,4 @@
-using BookWheel.Application.Specifications.Customer;
+using BookWheel.Domain.Specifications.Customer;
 using BookWheel.Infrastructure.Repositories;
 using BookWheel.UnitTests.Builders;
 using Xunit;

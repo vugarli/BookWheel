@@ -1,6 +1,5 @@
 ﻿using BookWheel.Domain.LocationAggregate;
 using BookWheel.Domain.Repositories;
-using BookWheel.Domain.Specifications;
 using BookWheel.Infrastructure.Specification;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -8,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BookWheel.Domain;
 
 namespace BookWheel.Infrastructure.Repositories
 {
@@ -20,11 +20,19 @@ namespace BookWheel.Infrastructure.Repositories
             _applicationDbContext = applicationDbContext;
         }
 
+        public async Task AddLocationAsync(Location location) => await _applicationDbContext.AddAsync(location);
+        
         public async Task<Location?> GetLocationBySpecificationAsync
             (
             Specification<Location> spec
             )
         => await Queryable.ApplySpecification(spec).FirstOrDefaultAsync();
+        
+        public async Task<bool> CheckLocationBySpecificationAsync
+        (
+            Specification<Location> spec
+        )
+            => await Queryable.ApplySpecification(spec).AnyAsync();
 
 
         public void Update(Location location)

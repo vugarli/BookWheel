@@ -15,7 +15,14 @@ namespace BookWheel.Domain.Repositories
 
         public Task<CustomerUserRoot?> GetCustomerBySpecificationAsync
         (
-            BookWheel.Domain.Specifications.Specification<CustomerUserRoot> spec
+            Specification<CustomerUserRoot> spec
         );
+        
+        public Task<OwnerUserRoot?> GetOwnerBySpecificationAsync
+        (
+            Specification<OwnerUserRoot> spec
+        );
+        
+        
     }
 }

@@ -21,7 +21,7 @@ namespace BookWheel.Infrastructure.Config
 
             builder
                 .HasOne<OwnerUserRoot>()
-                .WithOne(os => os.Location)
+                .WithOne()
                 .HasForeignKey<Location>(c=>c.OwnerId);
 
             builder

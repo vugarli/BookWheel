@@ -20,7 +20,13 @@ namespace BookWheel.UnitTests.Builders
             
             return location;
         }
-        
+
+        public static Location GetDefaultLocation(Guid locationId,Guid ownerId)
+        {
+            var location = new Location(locationId,"LocationA",ownerId,0.4,0.4,1,new TimeOnlyRange("09:00","18:00"));
+            return location;
+        }
+
 
     }
 }

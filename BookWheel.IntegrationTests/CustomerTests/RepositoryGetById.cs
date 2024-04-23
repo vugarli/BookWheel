@@ -23,8 +23,10 @@ public class RepositoryGetById  : IClassFixture<SharedDatabaseFixture>
             var repo = new UserRepository(context);
             var Id = Guid.NewGuid();
             var Name = Guid.NewGuid().ToString();
+
+            var customer = new CustomerBuilder().WithId(Id).WithName(Name).Build();
             
-            await repo.CreateCustomerAsync(CustomerProvider.GetCustomer(Id,Name,"v@v.com"));
+            await repo.CreateCustomerAsync(customer);
             await context.SaveChangesAsync();
                 
             var readRepo = new UserRepository(Fixture.CreateContext(transaction));

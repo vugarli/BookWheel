@@ -34,9 +34,11 @@ public class SetLocationAndConfirm : IClassFixture<SharedDatabaseFixture>
             
             var ownerId = Guid.NewGuid();
             var locationId = Guid.NewGuid();
-            var owner = OwnerProvider.GetOwner(ownerId,"a","a");
             
-            var location = LocationProvider.GetDefaultLocation(locationId,ownerId);
+            // var owner = OwnerProvider.GetOwner(ownerId,"a","a");
+            var owner = new OwnerBuilder().WithId(ownerId).Build();
+            // var location = LocationProvider.GetDefaultLocation(locationId,ownerId);
+            var location = new LocationBuilder(ownerId).WithId(locationId).Build();
             
             await userRepo.CreateOwnerAsync(owner);
             await wContext.SaveChangesAsync();
@@ -65,10 +67,11 @@ public class SetLocationAndConfirm : IClassFixture<SharedDatabaseFixture>
             var ownerId = Guid.NewGuid();
             var locationId = Guid.NewGuid();
             var locationId2 = Guid.NewGuid();
-            var owner = OwnerProvider.GetOwner(ownerId,"a","a");
             
-            var location1 = LocationProvider.GetDefaultLocation(locationId,ownerId);
-            var location2 = LocationProvider.GetDefaultLocation(locationId2,ownerId);
+            var owner = new OwnerBuilder().WithId(ownerId).Build();
+            
+            var location1 = new LocationBuilder(ownerId).WithId(locationId).Build();
+            var location2 = new LocationBuilder(ownerId).WithId(locationId2).Build();
             
             await userRepo.CreateOwnerAsync(owner);
             await wContext.SaveChangesAsync();
@@ -83,6 +86,7 @@ public class SetLocationAndConfirm : IClassFixture<SharedDatabaseFixture>
         }
     }
     
-
+    
+    
 
 }

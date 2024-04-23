@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace BookWheel.UnitTests.Domain.LocationAggregate.ReservationTests
 {
-    public class Reservation_Create : IClassFixture<LocationContext>
+    public class CreatingReservations : IClassFixture<LocationContext>
     {
         public LocationContext LocationContext { get; set; }
 
-        public Reservation_Create(LocationContext locationContext)
+        public CreatingReservations(LocationContext locationContext)
         {
             LocationContext = locationContext;
         }
@@ -23,7 +23,12 @@ namespace BookWheel.UnitTests.Domain.LocationAggregate.ReservationTests
         [Fact]
         public void ThrowsExceptionOutOfBusinessHours()
         {
-            var location = LocationContext.GetLocation(1, "09:00", "18:00");
+            var locationBuilder = new LocationBuilder(Guid.NewGuid());
+            var location = locationBuilder
+                .WithWorkingTimeRange(new TimeOnlyRange("09:00", "18:00"))
+                .WithServices(LocationContext.Get30MinServices())
+                .Build();
+
             void Action() => location
                 .AddReservation(
                     Guid.NewGuid(),
@@ -40,7 +45,13 @@ namespace BookWheel.UnitTests.Domain.LocationAggregate.ReservationTests
         [InlineData(3)]
         public void ThrowsExceptionIfReservationOverlaps_WithBoxCounts(int boxCount)
         {
-            var location = LocationContext.GetLocation(boxCount,"01:00","23:59"); 
+            var locationBuilder = new LocationBuilder(Guid.NewGuid());
+            
+            var location = locationBuilder
+                .WithBoxCount(boxCount)
+                .WithWorkingTimeRange(new TimeOnlyRange("01:00", "23:59"))
+                .WithServices(LocationContext.Get30MinServices())
+                .Build();
             
             void Action() 
             {
@@ -60,8 +71,14 @@ namespace BookWheel.UnitTests.Domain.LocationAggregate.ReservationTests
         [InlineData(3)]
         public void DoesNotThrowExceptionIfReservationDoesNotOverlap_WithBoxCounts(int boxCount)
         {
-            var location = LocationContext.GetLocation(boxCount,"01:00","23:59");
+            var builder = new LocationBuilder(Guid.NewGuid());
 
+            var location = builder
+                .WithBoxCount(boxCount)
+                .WithWorkingTimeRange(new TimeOnlyRange("01:00","23:59"))
+                .WithServices(LocationContext.Get30MinServices())
+                .Build();
+            
             void Action() 
             {
                 foreach (var _ in Enumerable.Range(1,boxCount))
@@ -78,7 +95,8 @@ namespace BookWheel.UnitTests.Domain.LocationAggregate.ReservationTests
         [Fact]
         public void ThrowsExceptionWhenProvidedDuplicateServices()
         {
-            var location = LocationContext.GetLocation(1,"01:00","23:59"); 
+            var builder = new LocationBuilder(Guid.NewGuid());
+            var location = builder.WithWorkingTimeRange(new TimeOnlyRange("01:00", "23:59")).Build();
             
             void Action() 
             {
@@ -94,7 +112,8 @@ namespace BookWheel.UnitTests.Domain.LocationAggregate.ReservationTests
         [Fact]
         public void ThrowsExceptionWhenProvidedNonExistentServices()
         {
-            var location = LocationContext.GetLocation(1,"01:00","23:59"); 
+            var builder = new LocationBuilder(Guid.NewGuid());
+            var location = builder.WithWorkingTimeRange(new TimeOnlyRange("01:00","23:59")).Build();
             
             void Action() 
             {

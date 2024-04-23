@@ -8,15 +8,15 @@ public class LocationContext
 {
 
     public Location Location { get; set; }
-    public Guid LocationId
+    public static Guid LocationId
     {
         get => Guid.Parse("22cbb167-4f28-41e9-a927-fa750503cbb3");
     }
 
-    public List<Service> Services { get; set; } = new();
+    public static List<Service> Services { get; set; } = new();
     
     
-    public LocationContext()
+    static LocationContext()
     {
         Services.Add(ServiceProvider.GetService("e1c38ced-9248-4180-bace-2b605453f05e",LocationId,5));
         Services.Add(ServiceProvider.GetService("e0a92fed-2fe1-4bb8-aa3f-55939f82c354",LocationId,5));
@@ -28,19 +28,7 @@ public class LocationContext
         Services.Add(ServiceProvider.GetService("4cfe0fa9-2ae1-43b9-9a8e-cd954ad2ef9f",LocationId,120));
     }
 
-    public Location GetLocation(int boxCount,string start,string end)
-    {
-        var location = 
-            LocationProvider
-                .GetLocation(
-                    LocationId,
-                    boxCount,
-                    new TimeOnlyRange(start,end),
-                    Services.ToArray()
-                    );
-        
-        return location;
-    }
+   
     
     public IEnumerable<(DateTimeOffset, IEnumerable<Service>)> GetReservationWithDuplicateServices()
         => new (DateTimeOffset, IEnumerable<Service>)[]
@@ -70,7 +58,7 @@ public class LocationContext
 
 
 
-    public List<Service> Get30MinServices()
+    public static List<Service> Get30MinServices()
     {
         var services = new List<Service>();
         

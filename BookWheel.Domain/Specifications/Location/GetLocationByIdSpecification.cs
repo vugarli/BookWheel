@@ -7,7 +7,6 @@
             :base(l=>l.Id == Id)
         {
             AddInclude(l=>l.Reservations);
-            AddInclude(l=>l.Coordinates);
             AddInclude(l=>l.Services);
         }
     }

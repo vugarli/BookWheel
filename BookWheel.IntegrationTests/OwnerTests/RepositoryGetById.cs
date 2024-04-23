@@ -1,3 +1,4 @@
+using BookWheel.Domain.AggregateRoots;
 using BookWheel.Domain.Specifications.Owner;
 using BookWheel.Infrastructure;
 using BookWheel.Infrastructure.Repositories;
@@ -24,14 +25,14 @@ public class RepositoryGetById : IClassFixture<SharedDatabaseFixture>
     {
         using (var transaction = Fixture.DbConnection.BeginTransaction())
         {
-            var wContext = Fixture.CreateContext(null);
+            var wContext = Fixture.CreateContext(transaction);
             var wRepo = new UserRepository(wContext);
 
             var Id = Guid.NewGuid();
             var Name = Guid.NewGuid().ToString();
 
-            var wOwner = OwnerProvider.GetOwner(Id,Name,Name); 
-            
+            // var wOwner = OwnerProvider.GetOwner(Id,Name,Name);
+            var wOwner = new OwnerBuilder().WithId(Id).WithName(Name).Build();
             await wRepo.CreateOwnerAsync(wOwner);
 
             await wContext.SaveChangesAsync();

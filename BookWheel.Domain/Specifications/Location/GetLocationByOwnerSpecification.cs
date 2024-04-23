@@ -9,7 +9,6 @@ public class GetLocationByOwnerSpecification : Specification<LocationAggregate.L
         : base(l=>l.OwnerId == ownerId)
     {
         AddInclude(l=>l.Reservations);
-        //AddInclude(l=>l.Coordinates);
         AddInclude(l=>l.Services);
     }
 }

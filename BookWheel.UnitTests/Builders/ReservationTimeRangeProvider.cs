@@ -9,10 +9,6 @@ namespace BookWheel.UnitTests.Builders
 {
     public static class ReservationTimeRangeProvider
     {
-
-        
-        
-        
         /// <summary>
         /// Provides nonoverlapping test reservation times for the specified box count by replicating core datas.
         /// </summary>

@@ -4,6 +4,7 @@ using NetTopologySuite.Utilities;
 using Guard = Ardalis.GuardClauses.Guard;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,9 +26,8 @@ namespace BookWheel.Domain.LocationAggregate
         public TimeOnlyRange WorkingTimeRange { get; set; }
 
         public List<Service> Services { get; set; } = new();
+        
         public List<Reservation> Reservations { get; set; } = new();
-        //public List<Schedule> Schedules { get; set; }
-
         public byte[] Version { get; set; }
 
         public Location
@@ -44,20 +44,34 @@ namespace BookWheel.Domain.LocationAggregate
             Id = id;
             Name = Guard.Against.NullOrEmpty(name);
             OwnerId = Guard.Against.Default(ownerId);
-            // Coordinates = new Point
-            //     (
-            //     Guard.Against.Default(longCoord),
-            //     Guard.Against.Default(latCoord)
-            //     );
             var gf = NetTopologySuite.NtsGeometryServices.Instance.CreateGeometryFactory(4326);
-
-            // Create a point at Aurich (lat=53.4837, long=7.5404)
-            Coordinates = gf.CreatePoint(new NetTopologySuite.Geometries.Coordinate(7.5404, 53.4837));
-            
+            // coordinate validation
+            Coordinates = gf.CreatePoint(new NetTopologySuite.Geometries.Coordinate(latCoord, longCoord));
             BoxCount = boxCount;
             WorkingTimeRange = workingTimeRange;
         }
+        
+        public void AddService(Service newService)
+        {
+            if (Services.Any(s => s.Id == newService.Id))
+                throw new DuplicateServiceException();
+            
+            Services.Add(newService);
+        }
 
+        public void RemoveService(Guid serviceToDeleteId)
+        {
+            if (Reservations.SelectMany(r => r.Services).Any(s => s.Id == serviceToDeleteId))
+                throw new ServiceAssociatedWithReservationException();
+
+            var service = Services.FirstOrDefault(s=>s.Id == serviceToDeleteId);
+
+            if (service is null)
+                throw new ServiceNotFoundException(serviceToDeleteId);
+
+            Services.Remove(service);
+        }
+        
         public void AddReservation(
             Guid userId,
             List<Service> services,

@@ -22,6 +22,35 @@ namespace BookWheel.Domain.LocationAggregate.Extensions
                 throw new DuplicateServiceException();
             }
         }
+
+        public static void InvalidCoordinates
+            (
+                this IGuardClause guardClause,
+                double latitude,
+                double longitude
+            )
+        {
+            // coordinates valid if:
+            // -90 <= lat <= 90
+            // -180 <= long <= 180
+            
+            if (latitude is > 90 or < -90)
+                throw new ArgumentException($"Latitude({latitude}) is not valid");
+            if(longitude is > 180 or < -180)
+                throw new ArgumentException($"Longitude({longitude}) is not valid");
+        }
+        
+        
+        public static void InUseService
+            (this IGuardClause guardClause,
+                Location locaiton,
+                Guid serviceToDeleteId
+                ){
+            if (locaiton.GetActiveReservations().SelectMany(r => r.Services).Any(s => s.Id == serviceToDeleteId))
+                throw new ServiceAssociatedWithReservationException();
+        }
+        
+        
         public static void ServiceDoesNotExist(
             this IGuardClause guardClause,
             Location location,
@@ -44,7 +73,7 @@ namespace BookWheel.Domain.LocationAggregate.Extensions
             if (
                 location.DoesOverlapsReservation(reservation)
                 )
-                throw new Exception("Overlapping reservations!");
+                throw new ReservationOverlapsException();
         }
 
         public static void OutOfBusinessHours
@@ -60,30 +89,6 @@ namespace BookWheel.Domain.LocationAggregate.Extensions
             if (reservationStart < location.WorkingTimeRange.Start || reservationEnd > location.WorkingTimeRange.End)
                 throw new ReservationOutOfBusinessHoursException();
         }
-
-
-        //public static void OverlappingScheduleDates
-        //    (
-        //    this IGuardClause guardClause,
-        //    Schedule schedule,
-        //    List<Schedule> schedulesList
-        //    )
-        //{
-        //    if (schedulesList.Any(s => s.ScheduleTimeRange.DoesOverlap(schedule.ScheduleTimeRange)))
-        //        throw new OverlappingScheduleException();
-        //}
-
-        //public static void DuplicateSchedules
-        //    (
-        //    this IGuardClause guardClause,
-        //    Schedule schedule,
-        //    List<Schedule> schedulesList
-        //    )
-        //{
-        //    if (schedulesList.Any(s => s.Id == schedule.Id))
-        //        throw new DuplicateScheduleException();
-        //}
-
-
+        
     }
 }

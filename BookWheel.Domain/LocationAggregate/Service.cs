@@ -1,3 +1,4 @@
+using Ardalis.GuardClauses;
 using BookWheel.Domain.Entities;
 
 namespace BookWheel.Domain.LocationAggregate;
@@ -23,6 +24,13 @@ public class Service : BaseEntity<Guid>
             Guid locationId
             )
     {
+        Guard.Against.Default(id);
+        Guard.Against.NullOrEmpty(name);
+        Guard.Against.NullOrEmpty(description);
+        Guard.Against.Negative(price);
+        Guard.Against.Negative(minuteDuration);
+        Guard.Against.Default(locationId);
+        
         Id = id;
         Name = name;
         Description = description;

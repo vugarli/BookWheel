@@ -39,7 +39,7 @@ namespace BookWheel.Domain.LocationAggregate
             BoxNumber = boxNumber;
             Status = ReservationStatus.Pending;
             Services = services;
-
+            // service check for empty
             PaymentDetails = new PaymentDetails(services.Sum(s=>s.Price));
         }
 
@@ -60,6 +60,7 @@ namespace BookWheel.Domain.LocationAggregate
 
         public void OwnerCancelReservation()
         {
+            // if finished no cancellation should happen
             Status = ReservationStatus.OwnerCancelled;
             CancelledAt = DateTime.UtcNow;
         }

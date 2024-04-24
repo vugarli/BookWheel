@@ -1,16 +1,8 @@
 ﻿using BookWheel.Domain.Entities;
 using NetTopologySuite.Geometries;
-using NetTopologySuite.Utilities;
 using Guard = Ardalis.GuardClauses.Guard;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BookWheel.Domain.LocationAggregate.Extensions;
-
 using BookWheel.Domain.Exceptions;
 using BookWheel.Domain.Value_Objects;
 
@@ -23,12 +15,12 @@ namespace BookWheel.Domain.LocationAggregate
         public Guid OwnerId { get; private set; }
         public Point Coordinates { get; private set; }
         public int BoxCount { get; set; } = 1;
-        public TimeOnlyRange WorkingTimeRange { get; set; }
+        public TimeOnlyRange WorkingTimeRange { get; private set; }
 
-        public List<Service> Services { get; set; } = new();
+        public List<Service> Services { get; init; } = new();
         
-        public List<Reservation> Reservations { get; set; } = new();
-        public byte[] Version { get; set; }
+        public List<Reservation> Reservations { get; init; } = new();
+        public byte[] Version { get; private set; }
 
         public Location
             (
@@ -41,14 +33,17 @@ namespace BookWheel.Domain.LocationAggregate
             TimeOnlyRange workingTimeRange
             )
         {
-            Id = id;
+            Guard.Against.InvalidCoordinates(latCoord,longCoord);
+            
+            Id = Guard.Against.Default(id);
             Name = Guard.Against.NullOrEmpty(name);
             OwnerId = Guard.Against.Default(ownerId);
+            
             var gf = NetTopologySuite.NtsGeometryServices.Instance.CreateGeometryFactory(4326);
-            // coordinate validation
             Coordinates = gf.CreatePoint(new NetTopologySuite.Geometries.Coordinate(latCoord, longCoord));
-            BoxCount = boxCount;
-            WorkingTimeRange = workingTimeRange;
+            
+            BoxCount = Guard.Against.NegativeOrZero(boxCount);
+            WorkingTimeRange = Guard.Against.Null(workingTimeRange);
         }
         
         public void AddService(Service newService)
@@ -61,8 +56,7 @@ namespace BookWheel.Domain.LocationAggregate
 
         public void RemoveService(Guid serviceToDeleteId)
         {
-            if (Reservations.SelectMany(r => r.Services).Any(s => s.Id == serviceToDeleteId))
-                throw new ServiceAssociatedWithReservationException();
+            Guard.Against.InUseService(this,serviceToDeleteId);
 
             var service = Services.FirstOrDefault(s=>s.Id == serviceToDeleteId);
 
@@ -144,6 +138,11 @@ namespace BookWheel.Domain.LocationAggregate
                 // event
             }
 
+        }
+
+        public IEnumerable<Reservation> GetActiveReservations()
+        {
+            return Reservations.Where(r=>r.IsActive());
         }
         
         public bool DoesOverlapsReservation(Reservation reservation)

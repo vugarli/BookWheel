@@ -14,8 +14,14 @@ namespace BookWheel.Domain.Entities
     }
     public record PaymentDetails
     {
-        public decimal AmountDue { get; set; }
+        public PaymentDetails(decimal amountDue)
+        {
+            AmountDue = amountDue;
+            Status = PaymentStatus.Pending;
+        }
+        
+        public decimal AmountDue { get; private set; }
 
-        public PaymentStatus Status { get; set; }
+        public PaymentStatus Status { get; private set; }
     }
 }

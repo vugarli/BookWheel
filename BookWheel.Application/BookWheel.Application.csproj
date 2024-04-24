@@ -27,8 +27,8 @@
 
   <ItemGroup>
     <Folder Include="Locations\Queries\" />
+    <Folder Include="Profiles\" />
     <Folder Include="Reservations\Queries\" />
-    <Folder Include="Schedules\Queries\" />
   </ItemGroup>
 
 </Project>

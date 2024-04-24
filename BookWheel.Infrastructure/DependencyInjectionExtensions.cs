@@ -6,15 +6,18 @@ using BookWheel.Infrastructure.Identity;
 using BookWheel.Infrastructure.Repositories;
 using BookWheel.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BookWheel.Infrastructure
 {
     public static class DependencyInjectionExtensions
     {
-        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,IConfiguration configuration)
         {
-            services.AddDbContext<ApplicationDbContext>();
+            
+            services.AddDbContext<ApplicationDbContext>(s=>s.UseSqlServer(configuration.GetConnectionString("MSSQL")));
 
             services.AddDbContext<ApplicationIdentityDbContext>()
                 .AddIdentity<ApplicationIdentityUser, IdentityRole<Guid>>()
@@ -38,7 +41,6 @@ namespace BookWheel.Infrastructure
         {
             services.Configure<IdentityOptions>(options =>
             {
-
                 
                 // Default Lockout settings.
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);

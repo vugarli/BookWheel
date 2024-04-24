@@ -16,19 +16,26 @@ namespace BookWheel.Infrastructure.Config
         public void Configure(EntityTypeBuilder<Location> builder)
         {
             builder
+                .Property(o => o.Version)
+                .IsRowVersion();
+
+            builder
                 .HasOne<OwnerUserRoot>()
-                .WithOne(os => os.Location)
+                .WithOne()
                 .HasForeignKey<Location>(c=>c.OwnerId);
 
+            builder
+                .HasMany(l => l.Services)
+                .WithOne()
+                .HasForeignKey(s=>s.LocationId);
+            
             builder
                 .HasMany(l => l.Reservations)
                 .WithOne()
                 .HasForeignKey(r=>r.LocationId);
 
-            builder
-                .HasMany(l => l.Schedules)
-                .WithOne()
-                .HasForeignKey(s=>s.LocationId);
+            builder.OwnsOne(l => l.WorkingTimeRange);
+
         }
     }
 }

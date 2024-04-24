@@ -22,11 +22,8 @@ namespace BookWheel.Infrastructure.Config
 
             builder.OwnsOne(r=>r.PaymentDetails);
 
-            builder
-                .HasOne<Schedule>()
-                .WithOne()
-                .HasForeignKey<Reservation>(r=>r.ScheduleId)
-                .OnDelete(DeleteBehavior.NoAction);
+            builder.OwnsOne(r=>r.ReservationTimeInterval);
+
 
         }
     }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using BookWheel.Domain.AggregateRoots;
 using BookWheel.Domain.Entities;
+using BookWheel.Domain.Value_Objects;
 
 namespace BookWheel.Domain.LocationAggregate
 {
@@ -20,28 +21,36 @@ namespace BookWheel.Domain.LocationAggregate
 
     public class Reservation : BaseEntity<Guid>
     {
-        private Reservation()
-        {
-            
-        }
+        private Reservation() { }
         public Reservation
             (
+            Guid id,
             Guid userId,
-            Guid scheduleId,
-            Guid locationId
+            TimeRange reservationTimeInterval,
+            Guid locationId,
+            int boxNumber,
+            List<Service> services
             )
         {
+            Id = id;
             UserId = Guard.Against.Default(userId);
-            ScheduleId = Guard.Against.Default(scheduleId);
+            ReservationTimeInterval = Guard.Against.Default(reservationTimeInterval);
             LocationId = Guard.Against.Default(locationId);
+            BoxNumber = boxNumber;
             Status = ReservationStatus.Pending;
+            Services = services;
+            // service check for empty
+            PaymentDetails = new PaymentDetails(services.Sum(s=>s.Price));
         }
 
         public PaymentDetails PaymentDetails { get; set; }
 
+        public List<Service> Services { get; set; }
+        public int BoxNumber { get; set; }
+
         public Guid UserId { get; private set; }
 
-        public Guid ScheduleId { get; private set; }
+        public TimeRange ReservationTimeInterval { get; private set; }
         public Guid LocationId { get; set; }
 
         public ReservationStatus Status { get; private set; }
@@ -51,8 +60,14 @@ namespace BookWheel.Domain.LocationAggregate
 
         public void OwnerCancelReservation()
         {
+            // if finished no cancellation should happen
             Status = ReservationStatus.OwnerCancelled;
             CancelledAt = DateTime.UtcNow;
+        }
+
+        public bool IsActive()
+        {
+            return Status == ReservationStatus.Pending;
         }
 
         public void CustomerCancelReservation()

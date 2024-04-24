@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Moq;
 
 namespace BookWheel.Infrastructure
 {
@@ -13,12 +16,14 @@ namespace BookWheel.Infrastructure
     {
         public ApplicationDbContext CreateDbContext(string[] args)
         {
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-               .SetBasePath(Directory.GetCurrentDirectory())
-               .AddJsonFile("appsettings.json")
-               .Build();
+            // IConfigurationRoot configuration = new ConfigurationBuilder()
+            //    .SetBasePath(Directory.GetCurrentDirectory())
+            //    .AddJsonFile("appsettings.json")
+            //    .Build();
 
-            return new ApplicationDbContext(configuration);
+            var context = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer("Server=localhost;Database=BookWheel;User Id=SA;Password=Vugar2003Vs$;TrustServerCertificate=True;",x=> x.UseNetTopologySuite()).Options, null);
+            
+            return context;
         }
     }
 

@@ -27,7 +27,7 @@ namespace BookWheel.Application.Services
         {
             var customer = new CustomerUserRoot(Id, email, email, email);
             
-            await UserRepository.CreateUserAsync(customer);
+            await UserRepository.CreateCustomerAsync(customer);
             
             return true;
         }
@@ -36,7 +36,7 @@ namespace BookWheel.Application.Services
         {
             var owner = new OwnerUserRoot(Id,email,email,email);
 
-            await UserRepository.CreateUserAsync(owner);
+            await UserRepository.CreateOwnerAsync(owner);
             
             return true;
         }

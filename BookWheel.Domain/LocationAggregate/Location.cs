@@ -14,9 +14,9 @@ namespace BookWheel.Domain.LocationAggregate
         public string Name { get; private set; }
         public Guid OwnerId { get; private set; }
         public Point Coordinates { get; private set; }
+        
         public int BoxCount { get; set; } = 1;
         public TimeOnlyRange WorkingTimeRange { get; private set; }
-
         public List<Service> Services { get; init; } = new();
         
         public List<Reservation> Reservations { get; init; } = new();

@@ -36,6 +36,23 @@ private TimeOnlyRange()
         {
         }
 
+        public int DurationInHours()
+        {
+            return (End.Hour - Start.Hour);
+        }
+
+        public List<TimeOnly> GetHours()
+        {
+            var timeHours = new List<TimeOnly>();
+
+            for(int i=0;i< DurationInHours() + 1; i++)
+            {
+                timeHours.Add(new TimeOnly(Start.Hour+i,0));
+            }
+            return timeHours;
+        }
+
+
         public bool DoesOverlap(TimeOnlyRange timeRange)
         {
             if (Start < timeRange.End)

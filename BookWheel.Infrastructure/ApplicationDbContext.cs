@@ -23,23 +23,23 @@ namespace BookWheel.Infrastructure
         }
 
         
-        public ApplicationDbContext
-           (
-           IConfiguration configuration
-           )
-        {
-            _configuration = configuration;
-        }
+        //public ApplicationDbContext
+        //   (
+        //   IConfiguration configuration
+        //   )
+        //{
+        //    _configuration = configuration;
+        //}
 
-        public ApplicationDbContext
-            (
-            IConfiguration configuration,
-            IMediator mediator
-            )
-        {
-            _configuration = configuration;
-            _mediator = mediator;
-        }
+        //public ApplicationDbContext
+        //    (
+        //    IConfiguration configuration,
+        //    IMediator mediator
+        //    )
+        //{
+        //    _configuration = configuration;
+        //    _mediator = mediator;
+        //}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

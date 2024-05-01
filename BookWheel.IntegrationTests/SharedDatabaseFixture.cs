@@ -31,6 +31,7 @@ public class SharedDatabaseFixture : IDisposable
         {
             context.Database.UseTransaction(transaction);
         }
+        context.Database.MigrateAsync().GetAwaiter().GetResult();
         return context;
     }
     

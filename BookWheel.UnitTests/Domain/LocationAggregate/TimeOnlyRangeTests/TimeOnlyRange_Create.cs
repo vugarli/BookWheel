@@ -18,6 +18,26 @@ namespace BookWheel.UnitTests.Domain.LocationAggregate.TimeOnlyRangeTests
             Assert.Throws<ArgumentException>(Action);
         }
 
+        [Fact]
+        public void TimeOnlyRangeValidDuration()
+        {
+            var range = new TimeOnlyRange("03:12", "05:00");
+
+            var durationInHours = range.DurationInHours();
+
+            Assert.True(durationInHours==2);
+        }
+
+        [Fact]
+        public void TimeOnlyGetHoursValid()
+        {
+            var range = new TimeOnlyRange("03:12", "05:00");
+
+            var hours = range.GetHours();
+
+            Assert.True(hours.Count()==3);
+        }
+
 
     }
 }

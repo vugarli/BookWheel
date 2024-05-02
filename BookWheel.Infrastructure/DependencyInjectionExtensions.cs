@@ -29,6 +29,7 @@ namespace BookWheel.Infrastructure
             services.AddScoped<ITokenService, TokenService>();
 
             services.AddScoped<ILocationRepository, LocationRepository>();
+            services.AddScoped<IRatingRepository, RatingRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             

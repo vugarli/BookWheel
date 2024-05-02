@@ -66,7 +66,7 @@ namespace BookWheel.Domain.LocationAggregate
             Services.Remove(service);
         }
         
-        public void AddReservation(
+        public Guid AddReservation(
             Guid userId,
             List<Service> services,
             DateTimeOffset startDate
@@ -103,11 +103,13 @@ namespace BookWheel.Domain.LocationAggregate
                     );
 
                 Reservations.Add(newReservation);
+                return newReservation.Id;
             }
             else
             {
                 Reservation newReservation = new Reservation(Guid.NewGuid(),userId, reservationTimeInterval, Id, 1,services.ToList());
                 Reservations.Add(newReservation);
+                return newReservation.Id;
             }
 
             // event add

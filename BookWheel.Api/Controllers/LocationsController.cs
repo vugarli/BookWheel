@@ -1,5 +1,6 @@
 ﻿using BookWheel.Application.Locations.Commands;
 using BookWheel.Application.Locations.Queries;
+using BookWheel.Domain.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,14 @@ namespace BookWheel.Api.Controllers
             SetLocationCommand setLocationCommand
             )
         {
-            await _mediator.Send(setLocationCommand);
+            try
+            {
+                await _mediator.Send(setLocationCommand);
+            }
+            catch(OwnerAlreadyHasLocationSet ex)
+            {
+                return BadRequest(ex);
+            }
             return Ok();
         }
 
@@ -46,7 +54,6 @@ namespace BookWheel.Api.Controllers
             return Ok(await _mediator.Send(new GetLocationTimeSlotsQuery(locationId)));
         }
 
-
         [HttpGet("{locationId:guid}")]
         public async Task<IActionResult> GetLocationAsync(Guid locationId)
         {
@@ -59,6 +66,11 @@ namespace BookWheel.Api.Controllers
             throw new NotImplementedException();
         }
 
+        [HttpPost("{id:guid}/reservations")]
+        public async Task<IActionResult> PostReservationAsync()
+        {
+            throw new NotImplementedException();
+        }
 
 
     }

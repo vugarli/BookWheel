@@ -1,5 +1,6 @@
 ﻿using BookWheel.Domain;
 using BookWheel.Domain.Entities;
+using BookWheel.Domain.RatingAggregate;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +16,8 @@ namespace BookWheel.Infrastructure
     {
         private IConfiguration _configuration { get; }
         private IMediator _mediator { get; }
+
+        DbSet<RatingRoot> Ratings { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IMediator mediator)
             : base(options)

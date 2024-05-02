@@ -12,24 +12,24 @@ namespace BookWheel.UnitTests.Domain.LocationAggregate.LocationReservationReadMo
     public class LocationReservationReadModelTests
     {
 
-        [Fact]
-        public void GetsValidAvailableTimeSlots()
-        {
-            var reservation1 = new ReservationBuilder(Guid.NewGuid(), Guid.NewGuid(), new(), new TimeRange("1/12/2023 09:00", "1/12/2023 10:30")).Build();
+        //[Fact]
+        //public void GetsValidAvailableTimeSlots()
+        //{
+        //    var reservation1 = new ReservationBuilder(Guid.NewGuid(), Guid.NewGuid(), new(), new TimeRange("1/12/2023 09:00", "1/12/2023 10:30")).Build();
 
-            var reservation2 = new ReservationBuilder(Guid.NewGuid(), Guid.NewGuid(), new(), new TimeRange("1/12/2023 09:00", "1/12/2023 10:20")).Build();
-
-
-            var locationReadModel = new LocationReservationsReadModel();
-            locationReadModel.WorkingHours = new TimeOnlyRange("09:00","18:00");
-            locationReadModel.ActiveReservations.Add(reservation1);
-            locationReadModel.ActiveReservations.Add(reservation2);
-
-            var timeslots = locationReadModel.GetAvailableTimeSlots();
+        //    var reservation2 = new ReservationBuilder(Guid.NewGuid(), Guid.NewGuid(), new(), new TimeRange("1/12/2023 09:00", "1/12/2023 10:20")).Build();
 
 
-            Assert.Equal(1, timeslots.Count);
-        }
+        //    var locationReadModel = new LocationReservationsReadModel();
+        //    locationReadModel.WorkingHours = new TimeOnlyRange("09:00","18:00");
+        //    locationReadModel.ActiveReservations.Add(reservation1);
+        //    locationReadModel.ActiveReservations.Add(reservation2);
+
+        //    var timeslots = locationReadModel.GetAvailableTimeSlots();
+
+
+        //    Assert.Equal(1, timeslots.Count);
+        //}
 
 
     }

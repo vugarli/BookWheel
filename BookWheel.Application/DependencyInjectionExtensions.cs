@@ -26,6 +26,8 @@ namespace BookWheel.Application
                 c.AddOpenBehavior(typeof(ValidationBehaviour<,>));
             });
 
+
+
             services.AddScoped<ICurrentUserService, CurrentUserService>();
 
             services.AddValidatorsFromAssembly(typeof(CreateReservationCommand).Assembly);

@@ -1,4 +1,5 @@
-﻿using BookWheel.Application.Locations.Queries;
+﻿using BookWheel.Application.Locations.Commands;
+using BookWheel.Application.Locations.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +19,13 @@ namespace BookWheel.Api.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> SetLocationAsync()
+        public async Task<IActionResult> SetLocationAsync
+            (
+            SetLocationCommand setLocationCommand
+            )
         {
-            throw new NotImplementedException();
+            await _mediator.Send(setLocationCommand);
+            return Ok();
         }
 
         [HttpGet]

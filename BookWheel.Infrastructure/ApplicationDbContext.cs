@@ -47,11 +47,11 @@ namespace BookWheel.Infrastructure
             base.OnModelCreating(modelBuilder);
         }
 
-        // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        // {
-        //     optionsBuilder.UseSqlServer(_configuration.GetConnectionString("MSSQL"),opt=>opt.UseNetTopologySuite());
-        //     base.OnConfiguring(optionsBuilder);
-        // }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer(_configuration.GetConnectionString("MSSQL"), opt => opt.UseNetTopologySuite());
+        //    base.OnConfiguring(optionsBuilder);
+        //}
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

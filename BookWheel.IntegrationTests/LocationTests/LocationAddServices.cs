@@ -56,7 +56,7 @@ public class LocationAddServices : IClassFixture<SharedDatabaseFixture>
 
             var spec = new GetLocationByIdSpecification(locationId);
             var rLocation = await rLocationRepo.GetLocationBySpecificationAsync(spec);
-            transaction.Commit();
+            //transaction.Commit();
             Assert.NotNull(rLocation);
             Assert.NotNull(rLocation.Services);
             Assert.True(rLocation.Services.Count() == 1);

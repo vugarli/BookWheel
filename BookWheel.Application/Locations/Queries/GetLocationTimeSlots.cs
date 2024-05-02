@@ -32,8 +32,7 @@ namespace BookWheel.Application.Locations.Queries
 
             var p = new { request.locationId };
 
-            var query = """
-                                
+            var query = """     
                                          WITH RecursiveCTE AS (
                     SELECT WorkingTimeRange_Start, WorkingTimeRange_End, WorkingTimeRange_Start AS HourlyDate
                     FROM Location where Id = @locationId

@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BookWheel.Domain\BookWheel.Domain.csproj" />
+    <ProjectReference Include="..\BookWheel.UnitTests\BookWheel.UnitTests.csproj" />
   </ItemGroup>
 
   <ItemGroup>

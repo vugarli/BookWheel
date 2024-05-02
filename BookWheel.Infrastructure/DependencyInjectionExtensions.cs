@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace BookWheel.Infrastructure
 {
@@ -16,8 +17,9 @@ namespace BookWheel.Infrastructure
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,IConfiguration configuration)
         {
-            
-            services.AddDbContext<ApplicationDbContext>(s=>s.UseSqlServer(configuration.GetConnectionString("MSSQL")));
+            services.AddDbContext<ApplicationDbContext>(opt=>
+                opt.UseSqlServer(configuration.GetConnectionString("MSSQL"), opt => opt.UseNetTopologySuite())
+                );
 
             services.AddDbContext<ApplicationIdentityDbContext>()
                 .AddIdentity<ApplicationIdentityUser, IdentityRole<Guid>>()
@@ -27,6 +29,7 @@ namespace BookWheel.Infrastructure
             services.AddScoped<ITokenService, TokenService>();
 
             services.AddScoped<ILocationRepository, LocationRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             
             services.AddScoped<IUnitOfWork, UnitOfWork>();

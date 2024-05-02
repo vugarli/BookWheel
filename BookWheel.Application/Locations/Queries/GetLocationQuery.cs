@@ -14,7 +14,6 @@ namespace BookWheel.Application.Locations.Queries
     {
     }
 
-
     public class GetLocationQueryHandler :
         IRequestHandler<GetLocationQuery, LocationDto>
     {
@@ -24,12 +23,12 @@ namespace BookWheel.Application.Locations.Queries
             _configuration = configuration;
         }
 
-
         public async Task<LocationDto> Handle(GetLocationQuery request, CancellationToken cancellationToken)
         {
             using var cnn = new SqlConnection(_configuration.GetConnectionString("MSSQL"));
 
             var p = new {request.locationId};
+
             var query = """
                 SELECT loc.Id,
                 loc.Name as LocationName,

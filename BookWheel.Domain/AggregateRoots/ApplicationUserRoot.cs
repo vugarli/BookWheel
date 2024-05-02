@@ -77,9 +77,5 @@ namespace BookWheel.Domain.AggregateRoots
         {
             Id = id;
         }
-        // public Location Location { get; set; }
     }
-
-
-
 }

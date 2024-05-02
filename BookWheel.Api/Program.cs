@@ -1,6 +1,7 @@
 
 using BookWheel.Application;
 using BookWheel.Application.Auth;
+using BookWheel.Domain.Services;
 using BookWheel.Infrastructure;
 using BookWheel.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
-    
+    c.UseDateOnlyTimeOnlyStringConverters();
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -75,10 +76,12 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
+builder.Services.AddDateOnlyTimeOnlyStringConverters();
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
 builder.Services.AddApplicationServices();
+builder.Services.AddScoped<OwnerLocationSetter>();
 
 builder.Services.AddControllers();
 

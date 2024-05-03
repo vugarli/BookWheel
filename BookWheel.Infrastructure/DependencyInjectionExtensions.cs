@@ -17,11 +17,15 @@ namespace BookWheel.Infrastructure
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,IConfiguration configuration)
         {
+
+
             services.AddDbContext<ApplicationDbContext>(opt=>
                 opt.UseSqlServer(configuration.GetConnectionString("MSSQL"), opt => opt.UseNetTopologySuite())
                 );
 
-            services.AddDbContext<ApplicationIdentityDbContext>()
+            services.AddDbContext<ApplicationIdentityDbContext>(opt =>
+                opt.UseSqlServer(configuration.GetConnectionString("MSSQL"))
+                )
                 .AddIdentity<ApplicationIdentityUser, IdentityRole<Guid>>()
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationIdentityDbContext>();

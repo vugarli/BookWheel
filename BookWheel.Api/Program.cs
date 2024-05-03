@@ -6,8 +6,10 @@ using BookWheel.Infrastructure;
 using BookWheel.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -87,6 +89,8 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -94,6 +98,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
+app.UseDeveloperExceptionPage();
+app.UseSwagger();
+app.UseSwaggerUI();
+
+
 app.UseRouting();
 
 app.MapControllers();
@@ -102,4 +113,31 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.Run();
+try
+{
+    using (var serviceScope = app.Services.CreateScope())
+    {
+        var dbContextData = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var dbContextIdentity = serviceScope.ServiceProvider.GetRequiredService<ApplicationIdentityDbContext>();
+
+        await dbContextData.Database.MigrateAsync();
+        await dbContextIdentity.Database.MigrateAsync();
+        // or dbContext.Database.EnsureCreatedAsync();
+    }
+
+    // Middleware pipeline configuration
+
+    app.Run();
+}
+catch (Exception e)
+{
+    app.Logger.LogCritical(e, "An exception occurred during the service startup");
+}
+finally
+{
+    // Flush logs or else you lose very important exception logs.
+    // if you use Serilog you can do it via
+    // await Log.CloseAndFlushAsync();
+}
+
+public partial class Program;

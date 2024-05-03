@@ -31,12 +31,11 @@ namespace BookWheel.Infrastructure
     {
         public ApplicationIdentityDbContext CreateDbContext(string[] args)
         {
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-               .SetBasePath(Directory.GetCurrentDirectory())
-               .AddJsonFile("appsettings.json")
-               .Build();
-
-            return new ApplicationIdentityDbContext(configuration);
+            //IConfigurationRoot configuration = new ConfigurationBuilder()
+            //   .SetBasePath(Directory.GetCurrentDirectory())
+            //   .AddJsonFile("appsettings.json")
+            //   .Build();
+            return new ApplicationIdentityDbContext(new DbContextOptionsBuilder<ApplicationIdentityDbContext>().UseSqlServer("Server=localhost;Database=BookWheel;User Id=SA;Password=Vugar2003Vs$;TrustServerCertificate=True;").Options);
         }
     }
 

@@ -50,13 +50,13 @@ public class LocationAddServices : IClassFixture<SharedDatabaseFixture>
             
             location.AddService(locationService);
             
-            await unitOfWork.SaveChangesAsync();
+            await wContext.SaveChangesAsync();
             
             await service.SetLocationToOwnerAsync(ownerId,location,CancellationToken.None);
 
             var spec = new GetLocationByIdSpecification(locationId);
             var rLocation = await rLocationRepo.GetLocationBySpecificationAsync(spec);
-            //transaction.Commit();
+            
             Assert.NotNull(rLocation);
             Assert.NotNull(rLocation.Services);
             Assert.True(rLocation.Services.Count() == 1);
@@ -95,7 +95,7 @@ public class LocationAddServices : IClassFixture<SharedDatabaseFixture>
             
             location.AddService(locationService);
             
-            await unitOfWork.SaveChangesAsync();
+            await wContext.SaveChangesAsync();
             
             await service.SetLocationToOwnerAsync(ownerId,location,CancellationToken.None);
 
@@ -109,7 +109,7 @@ public class LocationAddServices : IClassFixture<SharedDatabaseFixture>
             
             location.RemoveService(locationServiceId);
             
-            await unitOfWork.SaveChangesAsync();
+            await wContext.SaveChangesAsync();
             
             var rLocation = await rLocationRepo.GetLocationBySpecificationAsync(spec);
             

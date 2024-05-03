@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -20,18 +21,23 @@ namespace BookWheel.Infrastructure.Identity
     {
 
         private IConfiguration _configuration { get; }
-        public ApplicationIdentityDbContext(IConfiguration configuration)
+        //public ApplicationIdentityDbContext(IConfiguration configuration)
+        //{
+        //    _configuration = configuration;
+        //}
+
+        public ApplicationIdentityDbContext(DbContextOptions<ApplicationIdentityDbContext> options)
+            : base(options)
         {
-            _configuration = configuration;
+            
         }
 
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            var connectionString = _configuration.GetConnectionString(name: "MSSQL");
-            optionsBuilder.UseSqlServer(connectionString);
-            base.OnConfiguring(optionsBuilder);
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    var connectionString = _configuration.GetConnectionString(name: "MSSQL");
+        //    optionsBuilder.UseSqlServer(connectionString);
+        //    base.OnConfiguring(optionsBuilder);
+        //}
 
 
         protected override void OnModelCreating(ModelBuilder builder)

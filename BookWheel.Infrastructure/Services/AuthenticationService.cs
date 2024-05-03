@@ -60,8 +60,16 @@ namespace BookWheel.Infrastructure.Services
             var identityUser = new ApplicationIdentityUser();
             identityUser.Email = dto.Email;
             identityUser.UserName = dto.Email;
+            IdentityResult result=new();
+            try
+            {
+                result = await _userManager.CreateAsync(identityUser, dto.Password);
+            }
+            catch(Exception ex)
+            {
+                await Console.Out.WriteLineAsync(ex.Message);
+            }
 
-            var result = await _userManager.CreateAsync(identityUser, dto.Password);
 
             if (result.Succeeded)
             { 

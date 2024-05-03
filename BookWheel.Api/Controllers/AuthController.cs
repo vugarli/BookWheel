@@ -44,19 +44,19 @@ namespace BookWheel.Api.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponse>> Login([FromBody] LoginDto loginDto)
         {
-            try
-            {
+            //try
+            //{
                 var authResponse = await _authenticationService.LoginAsync(loginDto);
                 return Ok(authResponse);
-            }
-            catch (AuthenticationValidationException validationException)
-            {
-                return BadRequest(validationException);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Something bad happened, contact support!");
-            }
+            //}
+            //catch (AuthenticationValidationException validationException)
+            //{
+            //    return BadRequest(validationException);
+            //}
+            //catch (Exception ex)
+            //{
+            //    return BadRequest("Something bad happened, contact support!");
+            //}
         }
 
         [HttpPost("register")]
@@ -65,19 +65,19 @@ namespace BookWheel.Api.Controllers
             [FromBody] RegisterDto registerDto
             )
         {
-            try
-            {
+            //try
+            //{
                 await _authenticationService.RegisterAsync(registerDto);
                 return Ok();
-            }
-            catch (AuthenticationValidationException validationException)
-            {
-                return BadRequest(validationException);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Something bad happened, contact support!");
-            }
+            //}
+            //catch (AuthenticationValidationException validationException)
+            //{
+            //    return BadRequest(validationException);
+            //}
+            //catch (Exception ex)
+            //{
+            //    return BadRequest("Something bad happened, contact support!");
+            //}
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]

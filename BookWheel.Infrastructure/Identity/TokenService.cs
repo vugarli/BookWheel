@@ -35,10 +35,12 @@ namespace BookWheel.Infrastructure.Identity
             var key = Encoding.ASCII.GetBytes(AppConstants.JWTKEY);
             var applicationUser = await _userManager.FindByNameAsync(userName);
 
-            //if (applicationUser == null) throw new UserNotFoundException(userName);
+            //todo check for null
 
             var user = _dbContext.Set<ApplicationUserRoot>()
                 .FirstOrDefault(u => u.Id == applicationUser.Id);
+            
+            //if (applicationUser == null) throw new UserNotFoundException(userName);
 
             var roles = await _userManager.GetRolesAsync(applicationUser);
 

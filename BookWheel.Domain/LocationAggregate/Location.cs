@@ -26,7 +26,8 @@ namespace BookWheel.Domain.LocationAggregate
         [NotMapped]
         public List<TimeOnly> TimeSlots { get; set; } = new();
 
-        public byte[] Version { get; private set; }
+
+        public Guid ConcurrencyToken { get; private set; }
 
         public Location
             (
@@ -155,12 +156,14 @@ namespace BookWheel.Domain.LocationAggregate
                     );
 
                 ActiveReservations.Add(newReservation);
+                ConcurrencyToken = Guid.NewGuid();
                 return newReservation.Id;
             }
             else
             {
                 Reservation newReservation = new Reservation(Guid.NewGuid(),userId, reservationTimeInterval, Id, 1,services.ToList());
                 ActiveReservations.Add(newReservation);
+                ConcurrencyToken = Guid.NewGuid();
                 return newReservation.Id;
             }
 

@@ -5,6 +5,7 @@ using BookWheel.Domain;
 using FluentValidation;
 using MediatR;
 using HybridModelBinding;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookWheel.Application.Reservations.Commands
 {
@@ -54,22 +55,36 @@ namespace BookWheel.Application.Reservations.Commands
         public async Task Handle(CreateReservationCommand request, CancellationToken cancellationToken)
         {
             var spec = new GetLocationByIdSpecification(request.LocationId);
-            var location = await _locationRepository.GetLocationBySpecificationAsync(spec);
+            int attemptCount = 2;
+            bool IsSaved = false;
 
-            if (location is null)
-                throw new Exception("Location is not found");
+            while(IsSaved == false && attemptCount != 0)
+            {
+                var location = await _locationRepository.GetLocationBySpecificationAsync(spec);
 
-            var services = location.Services.Where(s => request.ServiceIds.Contains(s.Id)).ToList();
+                if (location is null)
+                    throw new Exception("Location is not found");
 
-            if (services.Count() != request.ServiceIds.Count())
-                throw new Exception("Service not found!");
+                var services = location.Services.Where(s => request.ServiceIds.Contains(s.Id)).ToList();
 
-            var userIdStr = _currentUserService.GetCurrentUserId();
-            Guid.TryParse(userIdStr, out Guid userId);
+                if (services.Count() != request.ServiceIds.Count())
+                    throw new Exception("Service not found!");
 
-            location.AddReservation(userId, services, request.StartDate);
+                var userIdStr = _currentUserService.GetCurrentUserId();
+                Guid.TryParse(userIdStr, out Guid userId);
 
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+                location.AddReservation(userId, services, request.StartDate);
+
+                try
+                {
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
+                    IsSaved = true;
+                }
+                catch(DbUpdateConcurrencyException exception)
+                {
+                    attemptCount -= 1;
+                }
+            }
         }
     }
 

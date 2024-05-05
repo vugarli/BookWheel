@@ -16,8 +16,8 @@ namespace BookWheel.Infrastructure.Config
         public void Configure(EntityTypeBuilder<Location> builder)
         {
             builder
-                .Property(o => o.Version)
-                .IsRowVersion();
+                .Property(o => o.ConcurrencyToken)
+                .IsConcurrencyToken();
 
             builder
                 .HasOne<OwnerUserRoot>()

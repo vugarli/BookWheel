@@ -25,10 +25,10 @@ namespace BookWheel.Application.Reservations.Commands
     {
         public CreateReservationCommandValidator()
         {
-            RuleFor(c => c.LocationId).NotNull().WithMessage("LocationId must be provided!");
-            RuleFor(c => c.StartDate).NotNull().WithMessage("StartDate must be provided!");
+            RuleFor(c => c.LocationId).NotEmpty().NotNull().WithMessage("LocationId must be provided!");
+            RuleFor(c => c.StartDate).NotEmpty().NotNull().WithMessage("StartDate must be provided!");
             RuleFor(c => c.ServiceIds).NotEmpty().WithMessage("ServiceIds must be provided!");
-            //TODO service ids duplicate rule
+            RuleFor(c => c.ServiceIds).Must(c=>c.Distinct().Count() == c.Count()).WithMessage("No duplicate service allowed");
         }
     }
     public class CreateReservationCommandHandler

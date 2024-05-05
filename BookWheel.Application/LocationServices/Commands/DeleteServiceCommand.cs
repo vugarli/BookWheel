@@ -1,6 +1,7 @@
 ﻿using BookWheel.Domain;
 using BookWheel.Domain.Repositories;
 using BookWheel.Domain.Specifications.Location;
+using FluentValidation;
 using HybridModelBinding;
 using MediatR;
 using System;
@@ -20,6 +21,19 @@ namespace BookWheel.Application.LocationServices.Commands
         [HybridBindProperty(Source.Route, order: 10)]
         [Obsolete]
         public Guid LocationId { get; set; }
+    }
+
+    public class DeleteServiceCommandValidator
+   : AbstractValidator<DeleteServiceCommand>
+    {
+        public DeleteServiceCommandValidator()
+        {
+            RuleFor(c => c.ServiceId).NotEmpty().NotNull().WithMessage("ServiceId must be provided!");
+            RuleFor(c => c.LocationId).NotEmpty().NotNull().WithMessage("LocationId must be provided!");
+
+            RuleFor(c => c.LocationId).NotEqual(Guid.Empty).WithMessage("LocationId is invalid!");
+            RuleFor(c => c.ServiceId).NotEqual(Guid.Empty).WithMessage("ServiceId is invalid!");   
+        }
     }
 
 

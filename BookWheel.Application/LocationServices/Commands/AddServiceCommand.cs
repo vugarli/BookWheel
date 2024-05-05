@@ -1,7 +1,9 @@
-﻿using BookWheel.Domain;
+﻿using BookWheel.Application.Reservations.Commands;
+using BookWheel.Domain;
 using BookWheel.Domain.LocationAggregate;
 using BookWheel.Domain.Repositories;
 using BookWheel.Domain.Specifications.Location;
+using FluentValidation;
 using HybridModelBinding;
 using MediatR;
 using NetTopologySuite.LinearReferencing;
@@ -27,6 +29,20 @@ namespace BookWheel.Application.LocationServices.Commands
         [HybridBindProperty(Source.Route, order: 10)]
         [Obsolete]
         public Guid LocationId { get; set; }
+    }
+
+    public class AddServiceCommandValidator
+    : AbstractValidator<AddServiceCommand>
+    {
+        public AddServiceCommandValidator()
+        {
+            RuleFor(c => c.Name).NotEmpty().NotNull().WithMessage("Name must be provided!");
+            RuleFor(c => c.Description).NotEmpty().NotNull().WithMessage("Description must be provided!");
+            RuleFor(c => c.Price).NotEmpty().NotNull().Must(c=>c>=0).WithMessage("Price is invalid!");
+            RuleFor(c => c.MinuteDuration).NotEmpty().NotNull().Must(c=>c>=0).WithMessage("Duration is invalid!");
+            RuleFor(c => c.LocationId).NotEmpty().NotNull().WithMessage("LocationId must be provided!");
+            RuleFor(c => c.LocationId).NotEqual(Guid.Empty).WithMessage("LocationId is invalid!");
+        }
     }
 
 

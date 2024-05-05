@@ -1,6 +1,6 @@
 namespace BookWheel.Domain.Exceptions;
 
-public class DuplicateServiceException : Exception
+public class DuplicateServiceException : DomainException
 {
     public DuplicateServiceException()
     :base("Duplicate services provided!")

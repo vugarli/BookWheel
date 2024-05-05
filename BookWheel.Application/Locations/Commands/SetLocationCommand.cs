@@ -1,7 +1,9 @@
-﻿using BookWheel.Domain.LocationAggregate;
+﻿using BookWheel.Application.LocationServices.Commands;
+using BookWheel.Domain.LocationAggregate;
 using BookWheel.Domain.Services;
 using BookWheel.Domain.Value_Objects;
 using BookWheel.UnitTests.Builders;
+using FluentValidation;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -21,6 +23,23 @@ namespace BookWheel.Application.Locations.Commands
         public double Lat { get; set; }
         public double Long { get; set; }
     }
+
+    public class SetLocationCommandValidator
+        : AbstractValidator<SetLocationCommand>
+    {
+        public SetLocationCommandValidator()
+        {
+            RuleFor(c => c.OwnerId).NotEmpty().NotNull().WithMessage("OwnerId must be provided!");
+            RuleFor(c => c.Name).NotEmpty().NotNull().WithMessage("Name must be provided!");
+            // coordinates valid if:
+            // -90 <= lat <= 90
+            // -180 <= long <= 180
+            RuleFor(c => c.Lat).NotEmpty().NotNull().Must(c=> c>=-90 && c<= 90).WithMessage("Latitude is invalid!");
+            RuleFor(c => c.Lat).NotEmpty().NotNull().Must(c=> c>=-180 && c<= 180).WithMessage("Longitude is invalid!");
+        }
+    }
+
+
 
     public class SetLocationCommandHandler
        : IRequestHandler<SetLocationCommand>

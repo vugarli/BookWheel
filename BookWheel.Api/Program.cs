@@ -1,6 +1,7 @@
 
 using BookWheel.Api;
 using BookWheel.Api.CustomAttribute;
+using BookWheel.Api.Filters;
 using BookWheel.Application;
 using BookWheel.Application.Auth;
 using BookWheel.Domain.Services;
@@ -94,12 +95,16 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddScoped<OwnerLocationSetter>();
 
-builder.Services.AddControllers().AddHybridModelBinder(options =>
+builder.Services.AddControllers(options=>
+options.Filters.Add(new ExceptionFilter())
+    
+    ).AddHybridModelBinder(options =>
 {
     /**
      * This is optional and overrides internal ordering of how binding gets applied to a model that doesn't have explicit binding-rules.
      * Internal ordering is: body => form-values => route-values => querystring-values => header-values
      */
+
     options.FallbackBindingOrder = new[] { Source.Route, Source.Body};
 }); ;
 

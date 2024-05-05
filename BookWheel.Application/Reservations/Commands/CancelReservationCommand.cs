@@ -2,6 +2,7 @@
 using BookWheel.Domain;
 using BookWheel.Domain.Repositories;
 using BookWheel.Domain.Specifications.Location;
+using FluentValidation;
 using HybridModelBinding;
 using MediatR;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -23,6 +24,19 @@ namespace BookWheel.Application.Reservations.Commands
         [HybridBindProperty(Source.Route)]
         [Obsolete]
         public Guid ReservationId { get; set; }
+    }
+
+
+    public class CancelReservationCommandValidator
+        : AbstractValidator<CancelReservationCommand>
+    {
+        public CancelReservationCommandValidator()
+        {
+            RuleFor(c => c.LocationId).NotEmpty().NotNull().WithMessage("Please provide LocationId");
+            RuleFor(c => c.ReservationId).NotEmpty().NotNull().WithMessage("Please provide ReservationId");
+            RuleFor(c => c.ReservationId).NotEqual(Guid.Empty).WithMessage("ReservationId is invalid!");
+            RuleFor(c => c.LocationId).NotEqual(Guid.Empty).WithMessage("LocationId is invalid!");
+        }
     }
 
     public class CancelReservationCommandHandler : IRequestHandler<CancelReservationCommand>

@@ -1,11 +1,36 @@
 ﻿using BookWheel.Application.Services;
-using BookWheel.Domain;
 using BookWheel.Domain.Repositories;
 using BookWheel.Domain.Specifications.Location;
+using BookWheel.Domain;
+using FluentValidation;
 using MediatR;
+using HybridModelBinding;
 
-namespace BookWheel.Application.Reservations.Commands.Create
+namespace BookWheel.Application.Reservations.Commands
 {
+    public class CreateReservationCommand : IRequest
+    {
+        [HybridBindProperty(Source.Route, order: 10)]
+        [Obsolete]
+        public Guid LocationId { get; set; }
+        
+        [HybridBindProperty(Source.Body, order: 10)]
+        public DateTimeOffset StartDate { get; set; }
+
+        [HybridBindProperty(Source.Body, order: 10)]
+        public List<Guid> ServiceIds { get; set; } = new(); // guard against empty services in domain
+    }
+    public class CreateReservationCommandValidator
+        : AbstractValidator<CreateReservationCommand>
+    {
+        public CreateReservationCommandValidator()
+        {
+            RuleFor(c => c.LocationId).NotNull().WithMessage("LocationId must be provided!");
+            RuleFor(c => c.StartDate).NotNull().WithMessage("StartDate must be provided!");
+            RuleFor(c => c.ServiceIds).NotEmpty().WithMessage("ServiceIds must be provided!");
+            //TODO service ids duplicate rule
+        }
+    }
     public class CreateReservationCommandHandler
         : IRequestHandler<CreateReservationCommand>
     {
@@ -38,13 +63,14 @@ namespace BookWheel.Application.Reservations.Commands.Create
 
             if (services.Count() != request.ServiceIds.Count())
                 throw new Exception("Service not found!");
-            
+
             var userIdStr = _currentUserService.GetCurrentUserId();
             Guid.TryParse(userIdStr, out Guid userId);
-            
-            location.AddReservation(userId,services,request.StartDate);
-            
+
+            location.AddReservation(userId, services, request.StartDate);
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
+
 }

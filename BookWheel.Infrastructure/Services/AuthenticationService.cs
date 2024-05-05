@@ -21,6 +21,7 @@ namespace BookWheel.Infrastructure.Services
         public AuthenticationService(
             SignInManager<ApplicationIdentityUser> signInManager,
             UserManager<ApplicationIdentityUser> userManager,
+            
             ITokenService tokenService,
             ApplicationDbContext dbContext)
         {
@@ -78,10 +79,12 @@ namespace BookWheel.Infrastructure.Services
                 if (dto.IsCustomer)
                 {
                     user = new CustomerUserRoot(identityUser.Id, dto.Email, dto.Email, dto.Email);
+                    await _userManager.AddToRoleAsync(identityUser,"Customer");
                 }
                 else 
                 {
                     user = new OwnerUserRoot(identityUser.Id, dto.Email, dto.Email, dto.Email);
+                    await _userManager.AddToRoleAsync(identityUser,"Owner");
                 }
                 await _dbContext.Set<ApplicationUserRoot>().AddAsync(user);
             }

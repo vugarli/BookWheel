@@ -41,6 +41,17 @@ namespace BookWheel.Domain.Value_Objects
             return false;
         }
 
+        public bool DoesOverlap(TimeOnlyRange timeRange)
+        {
+            if (TimeOnly.FromTimeSpan(Start.TimeOfDay) < timeRange.End)
+            { 
+                return TimeOnly.FromTimeSpan(End.TimeOfDay) > timeRange.Start;
+            }
+            return false;
+        }
+
+
+
 
     }
 

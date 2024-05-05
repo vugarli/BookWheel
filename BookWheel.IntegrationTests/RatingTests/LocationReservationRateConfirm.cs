@@ -5,6 +5,7 @@ using BookWheel.Domain.Specifications.Rating;
 using BookWheel.Infrastructure;
 using BookWheel.Infrastructure.Repositories;
 using BookWheel.UnitTests.Builders;
+using BookWheel.UnitTests.Domain.LocationAggregate;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -49,7 +50,7 @@ namespace BookWheel.IntegrationTests.RatingTests
             var owner = new OwnerBuilder().WithId(ownerId).Build();
             var customer = new CustomerBuilder().WithId(customerId).Build();
 
-            var reservationId = location.AddReservation(customerId, new List<Service>() { service }, DateTime.Now);
+            var reservationId = location.AddReservation(customerId, new List<Service>() { service }, LocationContext.GetValidReservationDate(location));
 
             //
 

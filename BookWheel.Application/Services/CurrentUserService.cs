@@ -12,6 +12,7 @@ namespace BookWheel.Application.Services
     public interface ICurrentUserService
     {
         public string GetCurrentUserId();
+        public string GetCurrentUserType();
     }
 
     public class CurrentUserService : ICurrentUserService
@@ -31,5 +32,14 @@ namespace BookWheel.Application.Services
 
             return userId;
         }
+
+        public string GetCurrentUserType()
+        {
+            var userRole = _context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+            return userRole;
+        }
+
+
     }
 }

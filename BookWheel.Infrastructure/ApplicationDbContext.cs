@@ -50,20 +50,16 @@ namespace BookWheel.Infrastructure
             base.OnModelCreating(modelBuilder);
         }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseSqlServer(_configuration.GetConnectionString("MSSQL"), opt => opt.UseNetTopologySuite());
-        //    base.OnConfiguring(optionsBuilder);
-        //}
-
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var events = new List<BaseDomainEvent>();
-            foreach (var history in this.ChangeTracker.Entries()
-            .Where(e => e.Entity.GetType() == typeof(BaseEntity<>) && (e.State == EntityState.Added ||
+            //var ents = ChangeTracker.Entries().Select(c=>c.Entity is IBaseEntity).ToList();
+            var entries = ChangeTracker.Entries()
+            .Where(e => e.Entity is IBaseEntity && (e.State == EntityState.Added ||
                 e.State == EntityState.Modified))
-            .Select(e => e.Entity as IBaseEntity)
-            )
+            .Select(e => e.Entity as IBaseEntity).ToList();
+
+            foreach (var history in entries)
             {
                 history.ModifiedAt = DateTime.Now;
                 if (history.CreatedAt <= DateTime.MinValue)

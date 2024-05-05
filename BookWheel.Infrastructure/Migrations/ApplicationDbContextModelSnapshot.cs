@@ -108,7 +108,6 @@ namespace BookWheel.Infrastructure.Migrations
             modelBuilder.Entity("BookWheel.Domain.LocationAggregate.Reservation", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("BoxNumber")
@@ -150,7 +149,6 @@ namespace BookWheel.Infrastructure.Migrations
             modelBuilder.Entity("BookWheel.Domain.LocationAggregate.Service", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -179,14 +177,9 @@ namespace BookWheel.Infrastructure.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid?>("ReservationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("LocationId");
-
-                    b.HasIndex("ReservationId");
 
                     b.ToTable("Service");
                 });
@@ -228,6 +221,21 @@ namespace BookWheel.Infrastructure.Migrations
                     b.HasIndex("LocationId");
 
                     b.ToTable("Ratings");
+                });
+
+            modelBuilder.Entity("ReservationService", b =>
+                {
+                    b.Property<Guid>("ReservationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ServicesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ReservationId", "ServicesId");
+
+                    b.HasIndex("ServicesId");
+
+                    b.ToTable("ReservationService");
                 });
 
             modelBuilder.Entity("BookWheel.Domain.AggregateRoots.CustomerUserRoot", b =>
@@ -278,7 +286,7 @@ namespace BookWheel.Infrastructure.Migrations
             modelBuilder.Entity("BookWheel.Domain.LocationAggregate.Reservation", b =>
                 {
                     b.HasOne("BookWheel.Domain.LocationAggregate.Location", null)
-                        .WithMany("Reservations")
+                        .WithMany("ActiveReservations")
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -341,10 +349,6 @@ namespace BookWheel.Infrastructure.Migrations
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("BookWheel.Domain.LocationAggregate.Reservation", null)
-                        .WithMany("Services")
-                        .HasForeignKey("ReservationId");
                 });
 
             modelBuilder.Entity("BookWheel.Domain.RatingAggregate.RatingRoot", b =>
@@ -356,15 +360,25 @@ namespace BookWheel.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BookWheel.Domain.LocationAggregate.Location", b =>
+            modelBuilder.Entity("ReservationService", b =>
                 {
-                    b.Navigation("Reservations");
+                    b.HasOne("BookWheel.Domain.LocationAggregate.Reservation", null)
+                        .WithMany()
+                        .HasForeignKey("ReservationId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
-                    b.Navigation("Services");
+                    b.HasOne("BookWheel.Domain.LocationAggregate.Service", null)
+                        .WithMany()
+                        .HasForeignKey("ServicesId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("BookWheel.Domain.LocationAggregate.Reservation", b =>
+            modelBuilder.Entity("BookWheel.Domain.LocationAggregate.Location", b =>
                 {
+                    b.Navigation("ActiveReservations");
+
                     b.Navigation("Services");
                 });
 

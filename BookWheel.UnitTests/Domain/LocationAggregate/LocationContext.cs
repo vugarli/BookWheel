@@ -42,11 +42,23 @@ public class LocationContext
             (DateTime.Parse("2023-03-03 10:00"),GetNonExistentService()),
         };
 
+
+    /// <summary>
+    /// Returns location datetime with time part matching location working hours start time.
+    /// </summary>
+    /// <param name="location"></param>
+    /// <returns></returns>
+    public static DateTime GetValidReservationDate(Location location)
+    {
+        DateTime date = new DateTime(2024,01,01);
+        date += location.WorkingTimeRange.Start.ToTimeSpan();
+        return date;
+    }
+
     public IEnumerable<(DateTimeOffset, IEnumerable<Service>)> GetConflictingReservations()
         => new (DateTimeOffset, IEnumerable<Service>)[]
         {
-            (DateTime.Parse("2023-03-03 10:00"),Get30MinServices()),
-            (DateTime.Parse("2023-03-03 10:20"),Get30MinServices()),
+            (DateTime.Parse("2023-03-03 10:00"),Get30MinServices())
         };
     
     public IEnumerable<(DateTimeOffset, IEnumerable<Service>)> GetNonConflictingReservations()

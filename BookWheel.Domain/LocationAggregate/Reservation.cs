@@ -45,7 +45,7 @@ namespace BookWheel.Domain.LocationAggregate
 
         public PaymentDetails PaymentDetails { get; set; }
 
-        public List<Service> Services { get; set; }
+        public List<Service> Services { get; set; } = new();
         public int BoxNumber { get; set; }
 
         public Guid UserId { get; private set; }

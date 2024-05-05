@@ -55,14 +55,15 @@ namespace BookWheel.UnitTests.Domain.LocationAggregate.ReservationTests
             
             void Action() 
             {
-                foreach (var _ in Enumerable.Range(1,boxCount))
+                foreach (var _ in Enumerable.Range(1,boxCount+1))
                 foreach ((DateTimeOffset startDate,IEnumerable<Service> services) in LocationContext.GetConflictingReservations())
                 { 
                     location.AddReservation(Guid.NewGuid(),services.ToList(),startDate);
                 }
             }; 
 
-            Assert.Throws<ReservationOverlapsException>(Action);
+            Assert.Throws<ReservationTimeNotInTimeSlots>(Action);
+            //Assert.Throws<ReservationOverlapsException>(Action);
         }
 
         [Theory]

@@ -1,10 +1,18 @@
-﻿using BookWheel.Application.Locations.Commands;
+﻿using BookWheel.Api.CustomAttribute;
+using BookWheel.Api.CustomAttribute;
+using BookWheel.Application.Locations.Commands;
 using BookWheel.Application.Locations.Queries;
+using BookWheel.Application.LocationServices.Commands;
+using BookWheel.Application.LocationServices.Queries;
+using BookWheel.Application.Reservations.Commands;
+using BookWheel.Application.Reservations.Queries;
 using BookWheel.Domain.Exceptions;
+using HybridModelBinding;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RESTFulSense.Controllers;
+using System.Net.Mime;
 
 namespace BookWheel.Api.Controllers
 {
@@ -44,10 +52,32 @@ namespace BookWheel.Api.Controllers
         }
 
         [HttpGet("{locationId:guid}/services")]
-        public async Task<IActionResult> GetAllLocations(Guid locationId)
+        public async Task<IActionResult> GetAllLocationServicesAsync(Guid locationId)
         {
             return Ok(await _mediator.Send(new GetAllLocationServicesQuery(locationId)));
         }
+
+        [HttpPost("{LocationId:guid}/services")]
+        
+        public async Task<IActionResult> AddLocationServiceAsync
+            (
+            [FromHybrid] AddServiceCommand command 
+            )
+        {
+            await _mediator.Send(command);
+            return Ok();
+        }
+
+        [HttpDelete("{LocationId:guid}/services/{ServiceId:guid}")]
+        public async Task<IActionResult> DeleteLocationServiceAsync
+            (
+            [FromHybrid] DeleteServiceCommand command
+            )
+        {
+            await _mediator.Send(command);
+            return Ok();
+        }
+
 
         [HttpGet("{locationId:guid}/timeslots")]
         public async Task<IActionResult> GetTimeSlotsForLocation(Guid locationId)
@@ -76,10 +106,24 @@ namespace BookWheel.Api.Controllers
             return Ok(await _mediator.Send(new GetLocationReservationsQuery(locationId)));
         }
 
-        [HttpPost("{id:guid}/reservations")]
-        public async Task<IActionResult> PostReservationAsync()
+        [HttpPost("{LocationId:guid}/reservations")]
+        public async Task<IActionResult> PostReservationAsync
+            (
+            [FromHybrid] CreateReservationCommand command
+            )
         {
-            throw new NotImplementedException();
+            await _mediator.Send(command);
+            return Ok();
+        }
+        
+        [HttpDelete("{LocationId:guid}/reservations/{ReservationId:guid}")]
+        public async Task<IActionResult> DeleteReservationAsync
+            (
+            [FromHybrid] CancelReservationCommand command
+            )
+        {
+            await _mediator.Send(command);
+            return Ok();
         }
 
 

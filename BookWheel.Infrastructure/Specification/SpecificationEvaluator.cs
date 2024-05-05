@@ -27,6 +27,15 @@ namespace BookWheel.Infrastructure.Specification
                 );
             }
 
+            if (specification.StrIncludes.Any())
+            {
+                queryable = specification.StrIncludes.Aggregate
+                    (
+                        queryable,
+                        (current, includestr) => current.Include(includestr)
+                    );
+            }
+
             return queryable;
         }
 

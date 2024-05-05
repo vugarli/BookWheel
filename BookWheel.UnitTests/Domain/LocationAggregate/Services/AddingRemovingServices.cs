@@ -39,8 +39,10 @@ public class AddingRemovingServices
         var userId = Guid.NewGuid();
 
         var services = new List<Service>() { service };
-        
-        location.AddReservation(userId,services,DateTime.Now);
+
+
+
+        location.AddReservation(userId,services,LocationContext.GetValidReservationDate(location));
 
         void Action() => location.RemoveService(service.Id);
         Assert.Throws<ServiceAssociatedWithReservationException>(Action);

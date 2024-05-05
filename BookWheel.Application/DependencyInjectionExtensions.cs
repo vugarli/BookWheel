@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BookWheel.Application.Reservations.Commands;
-using BookWheel.Application.Reservations.Commands.Create;
 
 namespace BookWheel.Application
 {

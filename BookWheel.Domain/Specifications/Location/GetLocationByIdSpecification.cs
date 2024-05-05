@@ -6,7 +6,8 @@
         public GetLocationByIdSpecification(Guid Id)
             :base(l=>l.Id == Id)
         {
-            AddInclude(l=>l.Reservations);
+            //AddInclude(l=>l.ActiveReservations);
+            AddInclude("ActiveReservations.Services");
             AddInclude(l=>l.Services);
         }
     }

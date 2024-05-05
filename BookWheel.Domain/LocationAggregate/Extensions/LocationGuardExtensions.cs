@@ -89,6 +89,21 @@ namespace BookWheel.Domain.LocationAggregate.Extensions
             if (reservationStart < location.WorkingTimeRange.Start || reservationEnd > location.WorkingTimeRange.End)
                 throw new ReservationOutOfBusinessHoursException();
         }
-        
+        public static void OutOfTimeSlots
+            (
+            this IGuardClause guardClause,
+            TimeRange timeRange,
+            Location location
+            )
+        {
+            var reservationStart = TimeOnly.FromDateTime(timeRange.Start.DateTime);
+
+            var timeSlots = location.GetTimeSlots();
+
+            if (!timeSlots.Contains(reservationStart))
+                throw new ReservationTimeNotInTimeSlots();
+        }
+
+
     }
 }

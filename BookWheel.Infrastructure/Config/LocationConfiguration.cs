@@ -30,7 +30,7 @@ namespace BookWheel.Infrastructure.Config
                 .HasForeignKey(s=>s.LocationId);
             
             builder
-                .HasMany(l => l.Reservations)
+                .HasMany(l => l.ActiveReservations)
                 .WithOne()
                 .HasForeignKey(r=>r.LocationId);
 

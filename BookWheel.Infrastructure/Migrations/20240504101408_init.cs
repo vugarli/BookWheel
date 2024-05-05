@@ -58,6 +58,32 @@ namespace BookWheel.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Ratings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ReservationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StarCount = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ratings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Ratings_Location_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Location",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Reservation",
                 columns: table => new
                 {
@@ -103,7 +129,6 @@ namespace BookWheel.Infrastructure.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     MinuteDuration = table.Column<int>(type: "int", nullable: false),
-                    ReservationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -117,10 +142,27 @@ namespace BookWheel.Infrastructure.Migrations
                         principalTable: "Location",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ReservationService",
+                columns: table => new
+                {
+                    ReservationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ServicesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReservationService", x => new { x.ReservationId, x.ServicesId });
                     table.ForeignKey(
-                        name: "FK_Service_Reservation_ReservationId",
+                        name: "FK_ReservationService_Reservation_ReservationId",
                         column: x => x.ReservationId,
                         principalTable: "Reservation",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ReservationService_Service_ServicesId",
+                        column: x => x.ServicesId,
+                        principalTable: "Service",
                         principalColumn: "Id");
                 });
 
@@ -129,6 +171,11 @@ namespace BookWheel.Infrastructure.Migrations
                 table: "Location",
                 column: "OwnerId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ratings_LocationId",
+                table: "Ratings",
+                column: "LocationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reservation_LocationId",
@@ -141,24 +188,30 @@ namespace BookWheel.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ReservationService_ServicesId",
+                table: "ReservationService",
+                column: "ServicesId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Service_LocationId",
                 table: "Service",
                 column: "LocationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Service_ReservationId",
-                table: "Service",
-                column: "ReservationId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Service");
+                name: "Ratings");
+
+            migrationBuilder.DropTable(
+                name: "ReservationService");
 
             migrationBuilder.DropTable(
                 name: "Reservation");
+
+            migrationBuilder.DropTable(
+                name: "Service");
 
             migrationBuilder.DropTable(
                 name: "Location");

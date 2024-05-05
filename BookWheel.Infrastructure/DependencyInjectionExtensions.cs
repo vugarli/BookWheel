@@ -27,6 +27,7 @@ namespace BookWheel.Infrastructure
                 opt.UseSqlServer(configuration.GetConnectionString("MSSQL"))
                 )
                 .AddIdentity<ApplicationIdentityUser, IdentityRole<Guid>>()
+                .AddRoles<IdentityRole<Guid>>()
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationIdentityDbContext>();
             

@@ -14,4 +14,11 @@ namespace BookWheel.Domain.Exceptions
             
         }
     }
+
+    public class ReservationTimeNotInTimeSlots : Exception
+    {
+        public ReservationTimeNotInTimeSlots()
+            : base("Reservation start time not in timeslots!") { }
+    }
+
 }

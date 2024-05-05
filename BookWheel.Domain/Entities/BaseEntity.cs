@@ -19,7 +19,7 @@ namespace BookWheel.Domain.Entities
         public TId Id { get; set; }
 
         [NotMapped]
-        public List<BaseDomainEvent> Events { get; protected set; }
+        public List<BaseDomainEvent> Events { get; protected set; } = new();
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }
         public DateTime DeletedAt { get; set; }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookWheel.Infrastructure.Migrations.ApplicationIdentityDb
 {
     /// <inheritdoc />
-    public partial class asdasd : Migration
+    public partial class init2323 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

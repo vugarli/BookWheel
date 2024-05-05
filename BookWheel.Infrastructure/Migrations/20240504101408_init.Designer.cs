@@ -13,8 +13,8 @@ using NetTopologySuite.Geometries;
 namespace BookWheel.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240502060650_init5656")]
-    partial class init5656
+    [Migration("20240504101408_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -153,7 +153,6 @@ namespace BookWheel.Infrastructure.Migrations
             modelBuilder.Entity("BookWheel.Domain.LocationAggregate.Service", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -182,16 +181,65 @@ namespace BookWheel.Infrastructure.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid?>("ReservationId")
+                    b.HasKey("Id");
+
+                    b.HasIndex("LocationId");
+
+                    b.ToTable("Service");
+                });
+
+            modelBuilder.Entity("BookWheel.Domain.RatingAggregate.RatingRoot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("LocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ReservationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("StarCount")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("LocationId");
 
-                    b.HasIndex("ReservationId");
+                    b.ToTable("Ratings");
+                });
 
-                    b.ToTable("Service");
+            modelBuilder.Entity("ReservationService", b =>
+                {
+                    b.Property<Guid>("ReservationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ServicesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ReservationId", "ServicesId");
+
+                    b.HasIndex("ServicesId");
+
+                    b.ToTable("ReservationService");
                 });
 
             modelBuilder.Entity("BookWheel.Domain.AggregateRoots.CustomerUserRoot", b =>
@@ -305,21 +353,36 @@ namespace BookWheel.Infrastructure.Migrations
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
+            modelBuilder.Entity("BookWheel.Domain.RatingAggregate.RatingRoot", b =>
+                {
+                    b.HasOne("BookWheel.Domain.LocationAggregate.Location", null)
+                        .WithMany()
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ReservationService", b =>
+                {
                     b.HasOne("BookWheel.Domain.LocationAggregate.Reservation", null)
-                        .WithMany("Services")
-                        .HasForeignKey("ReservationId");
+                        .WithMany()
+                        .HasForeignKey("ReservationId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("BookWheel.Domain.LocationAggregate.Service", null)
+                        .WithMany()
+                        .HasForeignKey("ServicesId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BookWheel.Domain.LocationAggregate.Location", b =>
                 {
                     b.Navigation("Reservations");
 
-                    b.Navigation("Services");
-                });
-
-            modelBuilder.Entity("BookWheel.Domain.LocationAggregate.Reservation", b =>
-                {
                     b.Navigation("Services");
                 });
 

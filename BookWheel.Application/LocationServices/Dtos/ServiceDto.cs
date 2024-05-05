@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookWheel.Application.Locations.Dtos
+namespace BookWheel.Application.LocationServices.Dtos
 {
     public class ServiceDto
     {

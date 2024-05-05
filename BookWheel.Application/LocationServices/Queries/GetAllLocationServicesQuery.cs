@@ -1,4 +1,4 @@
-﻿using BookWheel.Application.Locations.Dtos;
+﻿using BookWheel.Application.LocationServices.Dtos;
 using Dapper;
 using MediatR;
 using Microsoft.Data.SqlClient;
@@ -9,9 +9,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookWheel.Application.Locations.Queries
+namespace BookWheel.Application.LocationServices.Queries
 {
-    public record GetAllLocationServicesQuery(Guid LocationId) : IRequest<IList<ServiceDto>> {}
+    public record GetAllLocationServicesQuery(Guid LocationId) : IRequest<IList<ServiceDto>> { }
 
 
     public class GetAllLocationServicesQueryHandler
@@ -36,7 +36,7 @@ namespace BookWheel.Application.Locations.Queries
                 WHERE serv.LocationId = @LocationId;
                 """;
 
-            var serviceDtos = await cnn.QueryAsync<ServiceDto>(query,p);
+            var serviceDtos = await cnn.QueryAsync<ServiceDto>(query, p);
             return serviceDtos.ToList();
         }
     }

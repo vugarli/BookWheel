@@ -1,12 +1,17 @@
 
+using BookWheel.Api;
+using BookWheel.Api.CustomAttribute;
 using BookWheel.Application;
 using BookWheel.Application.Auth;
 using BookWheel.Domain.Services;
 using BookWheel.Infrastructure;
 using BookWheel.Infrastructure.Identity;
+using HybridModelBinding;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
@@ -17,6 +22,10 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
     c.UseDateOnlyTimeOnlyStringConverters();
+    c.EnableAnnotations();
+    c.OperationFilter<HybridOperationFilter>();
+    //c.SchemaFilter<SwaggerExcludeFilter>();
+    c.IgnoreObsoleteProperties();
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -85,7 +94,14 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddScoped<OwnerLocationSetter>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddHybridModelBinder(options =>
+{
+    /**
+     * This is optional and overrides internal ordering of how binding gets applied to a model that doesn't have explicit binding-rules.
+     * Internal ordering is: body => form-values => route-values => querystring-values => header-values
+     */
+    options.FallbackBindingOrder = new[] { Source.Route, Source.Body};
+}); ;
 
 var app = builder.Build();
 
@@ -100,10 +116,8 @@ if (app.Environment.IsDevelopment())
 }
 
 
-app.UseDeveloperExceptionPage();
-app.UseSwagger();
-app.UseSwaggerUI();
-
+app.UseCors(builder =>
+           builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
 
 app.UseRouting();
 
@@ -119,9 +133,12 @@ try
     {
         var dbContextData = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         var dbContextIdentity = serviceScope.ServiceProvider.GetRequiredService<ApplicationIdentityDbContext>();
+        var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+
 
         await dbContextData.Database.MigrateAsync();
         await dbContextIdentity.Database.MigrateAsync();
+        await ApplicationIdentityDbContextSeed.SeedAsync(dbContextIdentity,roleManager);
         // or dbContext.Database.EnsureCreatedAsync();
     }
 

@@ -10,9 +10,8 @@ namespace BookWheel.Domain.Value_Objects
 {
     public class TimeOnlyRange
     {
-
-        public TimeOnly Start{ get; set; }
-        public TimeOnly End{ get; set; }
+        public TimeOnly Start{ get; private set; }
+        public TimeOnly End{ get; private set; }
 
 private TimeOnlyRange()
 {
@@ -34,6 +33,13 @@ private TimeOnlyRange()
         public TimeOnlyRange(TimeOnly start, TimeSpan duration)
         : this(start, start.Add(duration))
         {
+        }
+
+        public TimeOnlyRange WithNewEnd(TimeOnly endTime)
+        {
+            Guard.Against.OutOfRange(Start, "start", Start, endTime);
+            End = endTime;
+            return this;
         }
 
         public int DurationInHours()
@@ -61,6 +67,18 @@ private TimeOnlyRange()
             }
             return false;
         }
+        
+
+        public bool DoesContain(TimeOnly timeOnly)
+        {
+            if (Start <= timeOnly)
+            {
+                return End >= timeOnly;
+            }
+            return false;
+        }
+
+
 
         public bool DoesOverlap(TimeRange timeRange)
         {

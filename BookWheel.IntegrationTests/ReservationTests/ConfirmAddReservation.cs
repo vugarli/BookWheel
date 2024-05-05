@@ -2,6 +2,7 @@ using BookWheel.Domain.LocationAggregate;
 using BookWheel.Domain.Specifications.Location;
 using BookWheel.Infrastructure.Repositories;
 using BookWheel.UnitTests.Builders;
+using BookWheel.UnitTests.Domain.LocationAggregate;
 using Xunit;
 
 
@@ -41,7 +42,7 @@ public class ConfirmAddReservation :IClassFixture<SharedDatabaseFixture>
         var owner = new OwnerBuilder().WithId(ownerId).Build();
         var customer = new CustomerBuilder().WithId(customerId).Build();
 
-        location.AddReservation(customerId,new List<Service>(){service},DateTime.Now);
+        location.AddReservation(customerId,new List<Service>(){service},LocationContext.GetValidReservationDate(location));
         
         //
         
@@ -56,9 +57,9 @@ public class ConfirmAddReservation :IClassFixture<SharedDatabaseFixture>
         //
         
         Assert.NotNull(rLocation);
-        Assert.NotEmpty(rLocation.Reservations);
-        Assert.NotNull(rLocation.Reservations.FirstOrDefault());
-        Assert.True(rLocation.Reservations.FirstOrDefault().Status == ReservationStatus.Pending);
+        Assert.NotEmpty(rLocation.ActiveReservations);
+        Assert.NotNull(rLocation.ActiveReservations.FirstOrDefault());
+        Assert.True(rLocation.ActiveReservations.FirstOrDefault().Status == ReservationStatus.Pending);
     }
     
     

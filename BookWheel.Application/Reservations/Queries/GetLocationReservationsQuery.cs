@@ -1,4 +1,4 @@
-﻿using BookWheel.Application.Locations.Dtos;
+﻿using BookWheel.Application.Reservations.Dtos;
 using Dapper;
 using MediatR;
 using Microsoft.Data.SqlClient;
@@ -9,10 +9,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookWheel.Application.Locations.Queries
+namespace BookWheel.Application.Reservations.Queries
 {
     public record GetLocationReservationsQuery(Guid locationId)
-        :IRequest<IList<ReservationDto>>
+        : IRequest<IList<ReservationDto>>
     {
     }
 
@@ -37,7 +37,7 @@ namespace BookWheel.Application.Locations.Queries
 
             var query = """ SELECT * FROM dbo.Reservation WHERE LocationId = @locationId """;
 
-            var reservationDtos = await cnn.QueryAsync<ReservationDto>(query,p);
+            var reservationDtos = await cnn.QueryAsync<ReservationDto>(query, p);
             return reservationDtos.ToList();
         }
     }

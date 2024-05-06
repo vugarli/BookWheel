@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BookWheel.Domain.Exceptions
 {
-    public class ReservationOverlapsException : Exception
+    public class ReservationOverlapsException : DomainConflictException
     {
         public ReservationOverlapsException()
             : base("Reservation overlaps!") 
@@ -15,7 +15,7 @@ namespace BookWheel.Domain.Exceptions
         }
     }
 
-    public class ReservationTimeNotInTimeSlots : Exception
+    public class ReservationTimeNotInTimeSlots : DomainConflictException
     {
         public ReservationTimeNotInTimeSlots()
             : base("Reservation start time not in timeslots!") { }

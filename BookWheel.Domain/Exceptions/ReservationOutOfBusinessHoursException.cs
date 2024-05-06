@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BookWheel.Domain.Exceptions
 {
-    public class ReservationOutOfBusinessHoursException : Exception
+    public class ReservationOutOfBusinessHoursException : DomainConflictException
     {
         public ReservationOutOfBusinessHoursException()
             :base("Reservation is out of business hours!")

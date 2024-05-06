@@ -1,5 +1,6 @@
 
 using BookWheel.Api;
+using BookWheel.Api.Authorization.Requirements;
 using BookWheel.Api.CustomAttribute;
 using BookWheel.Api.Filters;
 using BookWheel.Application;
@@ -8,7 +9,9 @@ using BookWheel.Domain.Services;
 using BookWheel.Infrastructure;
 using BookWheel.Infrastructure.Identity;
 using HybridModelBinding;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -61,6 +64,9 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddApplicationServices();
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -87,12 +93,20 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options=>
+{
+    options.AddPolicy("CanReserve",p=>p.AddRequirements(new UserCustomerRequirement(),new EmailConfirmedRequirement()));
+    options.AddPolicy("CanSetLocation",p => p.AddRequirements(new UserOwnerRequirement(), new EmailConfirmedRequirement()));
+    options.AddPolicy("CanRate", p => p.AddRequirements(new UserCustomerRequirement(), new EmailConfirmedRequirement()));
+});
+
+builder.Services.AddSingleton<IAuthorizationHandler, UserCustomerRequirementHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, UserOwnerRequirementHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, EmailConfirmedRequirementHandler>();
+
 builder.Services.AddDateOnlyTimeOnlyStringConverters();
 
-builder.Services.AddInfrastructureServices(builder.Configuration);
 
-builder.Services.AddApplicationServices();
 builder.Services.AddScoped<OwnerLocationSetter>();
 
 builder.Services.AddControllers(options=>

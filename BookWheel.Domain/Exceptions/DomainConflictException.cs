@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace BookWheel.Domain.Exceptions
 {
-    public abstract class DomainException : Exception
+    public class DomainConflictException : Exception
     {
-        protected DomainException(string message):base(message)
+        protected DomainConflictException(string message) : base(message)
         {
-            
+
         }
     }
 }

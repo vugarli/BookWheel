@@ -20,18 +20,6 @@ namespace BookWheel.Api.Controllers
             throw new NotImplementedException();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateReservationAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> CancelReservationAsync()
-        {
-            throw new NotImplementedException();
-        }
-
         [HttpPut("{id:guid}/ratings")]
         public async Task<IActionResult> RateReservationAsync()
         {

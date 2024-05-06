@@ -60,11 +60,11 @@ namespace BookWheel.Api.Filters
 
                 context.Result = new BadRequestObjectResult(problemDetail);
             }
-            else if (context.Exception is DomainException)
+            else if (context.Exception is DomainConflictException)
             {
                 var problemDetail = new ValidationProblemDetails
                 {
-                    Status = StatusCodes.Status400BadRequest,
+                    Status = StatusCodes.Status409Conflict,
                     Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                     Title = context.Exception.Message
                 };
@@ -78,7 +78,27 @@ namespace BookWheel.Api.Filters
                         value: ((List<string>)error.Value)?.ToArray());
                 }
 
-                context.Result = new BadRequestObjectResult(problemDetail);
+                context.Result = new ConflictObjectResult(problemDetail);
+            }
+            else if (context.Exception is DomainNotFoundException)
+            {
+                var problemDetail = new ValidationProblemDetails
+                {
+                    Status = StatusCodes.Status404NotFound,
+                    Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+                    Title = context.Exception.Message
+                };
+
+                foreach (DictionaryEntry error in context.Exception.Data)
+                {
+                    string errorKey = ApplySerialization(error, jsonSerializerOptions);
+
+                    problemDetail.Errors.Add(
+                        key: errorKey,
+                        value: ((List<string>)error.Value)?.ToArray());
+                }
+
+                context.Result = new NotFoundObjectResult(problemDetail);
             }
             //else
             //{

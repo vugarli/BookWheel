@@ -9,6 +9,7 @@ using BookWheel.Application.Reservations.Queries;
 using BookWheel.Domain.Exceptions;
 using HybridModelBinding;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RESTFulSense.Controllers;
@@ -27,21 +28,14 @@ namespace BookWheel.Api.Controllers
             _mediator = mediator;
         }
 
-
         [HttpPost]
+        [Authorize(Policy ="CanSetLocation")]
         public async Task<IActionResult> SetLocationAsync
             (
             SetLocationCommand setLocationCommand
             )
         {
-            try
-            {
-                await _mediator.Send(setLocationCommand);
-            }
-            catch(OwnerAlreadyHasLocationSet ex)
-            {
-                return BadRequest(ex);
-            }
+            await _mediator.Send(setLocationCommand);            
             return Ok();
         }
 
@@ -107,6 +101,7 @@ namespace BookWheel.Api.Controllers
         }
 
         [HttpPost("{LocationId:guid}/reservations")]
+        [Authorize(Policy = "CanReserve")]
         public async Task<IActionResult> PostReservationAsync
             (
             [FromHybrid] CreateReservationCommand command

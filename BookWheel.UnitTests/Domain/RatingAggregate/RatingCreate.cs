@@ -19,7 +19,7 @@ namespace BookWheel.UnitTests.Domain.RatingAggregate
         {
             void Action()
             {
-                var rating = new RatingBuilder(Guid.NewGuid(), Guid.NewGuid()).WithStars(starcount).Build();
+                var rating = new RatingBuilder(Guid.NewGuid()).WithStars(starcount).Build();
             }
 
             Assert.Throws<ArgumentOutOfRangeException>(Action);
@@ -33,7 +33,7 @@ namespace BookWheel.UnitTests.Domain.RatingAggregate
         {
             void Action()
             {
-                var rating = new RatingBuilder(Guid.NewGuid(), Guid.NewGuid()).WithStars(starcount).Build();
+                var rating = new RatingBuilder(Guid.NewGuid()).WithStars(starcount).Build();
             }
 
             var exception = Record.Exception(Action);

@@ -1,4 +1,5 @@
 ﻿using BookWheel.Application.Reservations.Commands;
+using BookWheel.Application.Services;
 using BookWheel.Domain;
 using BookWheel.Domain.LocationAggregate;
 using BookWheel.Domain.Repositories;
@@ -50,15 +51,24 @@ namespace BookWheel.Application.LocationServices.Commands
     {
         public ILocationRepository LocationRepository { get; }
         public IUnitOfWork UnitOfWork { get; }
-        public AddServiceCommandHandler(ILocationRepository locationRepository, IUnitOfWork unitOfWork)
+        public ICurrentUserService CurrentUserService { get; }
+
+        public AddServiceCommandHandler
+            (
+            ILocationRepository locationRepository,
+            IUnitOfWork unitOfWork,
+            ICurrentUserService currentUserService
+            )
         {
             LocationRepository = locationRepository;
             UnitOfWork = unitOfWork;
+            CurrentUserService = currentUserService;
         }
 
         public async Task Handle(AddServiceCommand request, CancellationToken cancellationToken)
         {
-            var spec = new GetLocationByIdSpecification(request.LocationId);
+            var ownerId = Guid.Parse(CurrentUserService.GetCurrentUserId());
+            var spec = new GetOwnerLocationByIdSpecification(ownerId,request.LocationId);
             var location = await LocationRepository.GetLocationBySpecificationAsync(spec);
 
             if (location is null)

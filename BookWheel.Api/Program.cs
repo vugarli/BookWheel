@@ -98,6 +98,8 @@ builder.Services.AddAuthorization(options=>
     options.AddPolicy("CanReserve",p=>p.AddRequirements(new UserCustomerRequirement(),new EmailConfirmedRequirement()));
     options.AddPolicy("CanSetLocation",p => p.AddRequirements(new UserOwnerRequirement(), new EmailConfirmedRequirement()));
     options.AddPolicy("CanRate", p => p.AddRequirements(new UserCustomerRequirement(), new EmailConfirmedRequirement()));
+    options.AddPolicy("Owner", p => p.AddRequirements(new UserOwnerRequirement(), new EmailConfirmedRequirement()));
+    options.AddPolicy("Customer", p => p.AddRequirements(new UserCustomerRequirement(), new EmailConfirmedRequirement()));
 });
 
 builder.Services.AddSingleton<IAuthorizationHandler, UserCustomerRequirementHandler>();

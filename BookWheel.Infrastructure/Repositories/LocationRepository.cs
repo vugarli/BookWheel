@@ -26,7 +26,12 @@ namespace BookWheel.Infrastructure.Repositories
             (
             Specification<Location> spec
             )
-        => await Queryable.ApplySpecification(spec).FirstOrDefaultAsync();
+        => await Queryable
+            .Include(l=>l.Services)
+            .Include(l=>
+                l.ActiveReservations
+                .Where(r=>r.Status == ReservationStatus.Pending))
+            .ApplySpecification(spec).FirstOrDefaultAsync();
         
         public async Task<bool> CheckLocationBySpecificationAsync
         (

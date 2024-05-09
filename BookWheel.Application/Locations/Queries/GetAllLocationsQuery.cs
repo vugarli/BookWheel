@@ -33,7 +33,11 @@ namespace BookWheel.Application.Locations.Queries
                     BoxCount,
                     userr.Name as OwnerName,
                     Coordinates.Lat as Lat,
-                    Coordinates.Long as Long
+                    Coordinates.Long as Long,
+                        (Select AVG(CAST(rate.StarCount AS float))
+                    from Ratings rate
+                    left join Reservation res
+                    on rate.ReservationId = res.Id WHERE res.LocationId = loc.Id) AS Rating
                     FROM dbo.Location loc
                     left join dbo.ApplicationUserRoot userr
                     on loc.OwnerId = userr.Id

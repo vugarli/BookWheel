@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BookWheel.Application.Ratings.Commands;
+using BookWheel.Application.Reservations.Queries;
+using HybridModelBinding;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookWheel.Api.Controllers
@@ -7,23 +12,39 @@ namespace BookWheel.Api.Controllers
     [ApiController]
     public class ReservationsController : ControllerBase
     {
+        public IMediator Mediator { get; }
+        public ReservationsController(IMediator mediator)
+        {
+            Mediator = mediator;
+        }
+
 
         [HttpGet]
+        [Authorize(Policy ="Customer")]
         public async Task<IActionResult> GetCurrentUserReservationsAsync()
         {
-            throw new NotImplementedException();
+            return Ok(await Mediator.Send(new GetCurrentCustomerReservationsQuery()));
         }
 
-        [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetReservationByIdAsync()
+        [HttpGet("{ReservationId:guid}")]
+        [Authorize(Policy ="Customer")]
+        public async Task<IActionResult> GetReservationByIdAsync
+            (
+            [FromHybrid] GetCurrentCustomerReservationByIdQuery query
+            )
         {
-            throw new NotImplementedException();
+            return Ok(await Mediator.Send(query));
         }
 
-        [HttpPut("{id:guid}/ratings")]
-        public async Task<IActionResult> RateReservationAsync()
+        [HttpPut("{ReservationId:guid}/ratings")]
+        [Authorize(Policy ="Customer")]
+        public async Task<IActionResult> RateReservationAsync
+            (
+            [FromHybrid] RateReservationCommand command
+            )
         {
-            throw new NotImplementedException();
+            await Mediator.Send(command);
+            return Ok();
         }
 
     }

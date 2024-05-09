@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BookWheel.Application.Locations.Dtos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,5 +24,7 @@ namespace BookWheel.Application.Reservations.Dtos
 
         public DateTime FinishedAt { get; set; }
         public DateTime CancelledAt { get; set; }
+
+        public RatingDto? Rating { get; set; }
     }
 }

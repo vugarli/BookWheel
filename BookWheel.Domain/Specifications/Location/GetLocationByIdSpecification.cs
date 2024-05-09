@@ -7,8 +7,8 @@
             :base(l=>l.Id == Id)
         {
             //AddInclude(l=>l.ActiveReservations);
-            AddInclude("ActiveReservations.Services");
-            AddInclude(l=>l.Services);
+            //AddInclude("ActiveReservations.Services");
+            //AddInclude(l=>l.Services);
         }
     }
 }

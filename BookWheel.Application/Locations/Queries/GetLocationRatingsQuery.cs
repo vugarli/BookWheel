@@ -34,7 +34,12 @@ namespace BookWheel.Application.Locations.Queries
 
             var p = new { locationId = request.LocationId };
 
-            var query = """ SELECT * FROM dbo.Ratings WHERE LocationId = @locationId """;
+            var query = """
+                 SELECT R.Id,R.UserId,StarCount,Comment,ReservationId FROM Ratings R
+                left join Reservation res
+                    on res.Id = R.ReservationId
+                      WHERE res.LocationId = @locationId
+                """;
 
             var ratingDtos = await tran.QueryAsync<RatingDto>(query,p);
 

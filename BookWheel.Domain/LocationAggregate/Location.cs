@@ -20,7 +20,6 @@ namespace BookWheel.Domain.LocationAggregate
         public TimeOnlyRange WorkingTimeRange { get; private set; }
         public List<Service> Services { get; init; } = new();
         
-        //TODO add filter to have only active ones
         public List<Reservation> ActiveReservations { get; init; } = new();
 
         [NotMapped]
@@ -103,7 +102,6 @@ namespace BookWheel.Domain.LocationAggregate
                 }
                     groupedTimeTables[b].RemoveAll(r => timeOnlyRange.DoesContain(r));
                     groupedTimeTables[b].Insert(0, timeOnlyRange.End);
-
             }
 
             }

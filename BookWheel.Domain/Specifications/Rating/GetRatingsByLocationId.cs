@@ -11,7 +11,7 @@ namespace BookWheel.Domain.Specifications.Rating
         :Specification<RatingRoot>
     {
         public GetRatingsByLocationId(Guid LocationId)
-            :base(c=>c.LocationId == LocationId)
+            :base(c=>true == true)
         {            
         }
     }

@@ -9,7 +9,8 @@ namespace BookWheel.Domain.Repositories
 {
     public interface IRatingRepository
     {
-        public Task AddRatingAsync(RatingRoot location);
+        public Task AddRatingAsync(RatingRoot rating);
+        public Task<int> UpsertRatingAsync(RatingRoot rating);
         public Task<IList<RatingRoot?>> GetRatingsBySpecificationAsync(Specification<RatingRoot> spec);
         public Task<RatingRoot?> GetRatingBySpecificationAsync(Specification<RatingRoot> spec);
     }

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BookWheel.Application.Locations.Queries;
+using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookWheel.Api.Controllers
@@ -7,11 +9,17 @@ namespace BookWheel.Api.Controllers
     [ApiController]
     public class SearchController : ControllerBase
     {
-
-        [HttpGet("{query}")]
-        public async Task<IActionResult> SearchAsync()
+        public SearchController(IMediator mediator)
         {
-            throw new NotImplementedException();
+            Mediator = mediator;
+        }
+
+        public IMediator Mediator { get; }
+
+        [HttpGet("{SearchTerm}")]
+        public async Task<IActionResult> SearchAsync([FromRoute] SearchLocationByNameQuery query)
+        {
+            return Ok(await Mediator.Send(query));
         }
 
     }

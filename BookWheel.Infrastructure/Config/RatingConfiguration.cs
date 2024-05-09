@@ -16,7 +16,7 @@ namespace BookWheel.Infrastructure.Config
 
         public void Configure(EntityTypeBuilder<RatingRoot> builder)
         {
-            builder.HasOne<Location>().WithMany().HasForeignKey(r=>r.LocationId);
+            
         }
     }
 }

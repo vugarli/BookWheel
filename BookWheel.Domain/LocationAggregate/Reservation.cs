@@ -38,8 +38,8 @@ namespace BookWheel.Domain.LocationAggregate
             LocationId = Guard.Against.Default(locationId);
             BoxNumber = boxNumber;
             Status = ReservationStatus.Pending;
+            Guard.Against.Default(services.Count()); // not empty services
             Services = services;
-            // service check for empty
             PaymentDetails = new PaymentDetails(services.Sum(s=>s.Price));
         }
 

@@ -1,5 +1,4 @@
 ﻿using BookWheel.Api.CustomAttribute;
-using BookWheel.Api.CustomAttribute;
 using BookWheel.Application.Locations.Commands;
 using BookWheel.Application.Locations.Queries;
 using BookWheel.Application.LocationServices.Commands;
@@ -52,7 +51,6 @@ namespace BookWheel.Api.Controllers
         }
 
         [HttpPost("{LocationId:guid}/services")]
-        
         public async Task<IActionResult> AddLocationServiceAsync
             (
             [FromHybrid] AddServiceCommand command 
@@ -62,6 +60,7 @@ namespace BookWheel.Api.Controllers
             return Ok();
         }
 
+        [Authorize(Policy ="Owner")]
         [HttpDelete("{LocationId:guid}/services/{ServiceId:guid}")]
         public async Task<IActionResult> DeleteLocationServiceAsync
             (
@@ -71,7 +70,6 @@ namespace BookWheel.Api.Controllers
             await _mediator.Send(command);
             return Ok();
         }
-
 
         [HttpGet("{locationId:guid}/timeslots")]
         public async Task<IActionResult> GetTimeSlotsForLocation(Guid locationId)
@@ -111,6 +109,8 @@ namespace BookWheel.Api.Controllers
             return Ok();
         }
         
+        [Authorize(Policy = "Customer")]
+        [Authorize(Policy = "Owner")]
         [HttpDelete("{LocationId:guid}/reservations/{ReservationId:guid}")]
         public async Task<IActionResult> DeleteReservationAsync
             (
@@ -120,7 +120,5 @@ namespace BookWheel.Api.Controllers
             await _mediator.Send(command);
             return Ok();
         }
-
-
     }
 }

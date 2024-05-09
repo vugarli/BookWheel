@@ -17,9 +17,8 @@ namespace BookWheel.UnitTests.Builders
         private int Stars { get; set; } = 4;
 
 
-        public RatingBuilder(Guid locationId,Guid reservationId)
+        public RatingBuilder(Guid reservationId)
         {
-            LocationId = locationId;
             ReservationId = reservationId;
         }
 
@@ -43,7 +42,7 @@ namespace BookWheel.UnitTests.Builders
 
         public RatingRoot Build()
         {
-            var rating =  new RatingRoot(UserId,ReservationId,LocationId,Comment,Stars);
+            var rating =  new RatingRoot(UserId,ReservationId,Comment,Stars);
             return rating;
         }
 

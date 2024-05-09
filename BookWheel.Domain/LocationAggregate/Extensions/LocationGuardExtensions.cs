@@ -23,6 +23,16 @@ namespace BookWheel.Domain.LocationAggregate.Extensions
             }
         }
 
+        public static void PastDate(
+            this IGuardClause guardClause,
+            DateTimeOffset dateTimeOffset)
+        {
+            if (dateTimeOffset < DateTimeOffset.Now)
+            {
+                throw new ReservationDatePastException();
+            }
+        }
+
         public static void InvalidCoordinates
             (
                 this IGuardClause guardClause,

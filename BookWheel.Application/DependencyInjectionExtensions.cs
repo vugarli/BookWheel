@@ -26,6 +26,7 @@ namespace BookWheel.Application
             });
 
 
+            services.AddScoped<GetUserEmailAddressService>();
 
             services.AddScoped<ICurrentUserService, CurrentUserService>();
 

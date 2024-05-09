@@ -74,7 +74,7 @@ namespace BookWheel.Infrastructure
             // dispatch events
 
             foreach(var domainEvent in events)
-                await _mediator.Publish(domainEvent);
+                await _mediator.Publish(domainEvent).ConfigureAwait(false);
 
             return result;
         }

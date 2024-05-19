@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace BookWheel.IntegrationTests;
+namespace EndToEndTests;
 
 public class SharedDatabaseFixture : IDisposable
 {
@@ -51,16 +51,6 @@ public class SharedDatabaseFixture : IDisposable
         {
             context.Database.UseTransaction(transaction);
         }
-        //lock (_lock)
-        //{ 
-        //    if(!_databaseInitialized)
-        //    {
-        //        using var samplecontext = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer(DbConnection, x => x.UseNetTopologySuite()).Options, new Mock<IMediator>().Object);
-        //        samplecontext.Database.UseTransaction(transaction);
-        //        samplecontext.Database.MigrateAsync().GetAwaiter().GetResult();
-        //        _databaseInitialized = true;
-        //    }
-        //}
         return context;
     }
     

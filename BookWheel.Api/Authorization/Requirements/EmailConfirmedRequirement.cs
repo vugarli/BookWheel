@@ -16,7 +16,6 @@ namespace BookWheel.Api.Authorization.Requirements
             if(context.User is null)
                 return Task.CompletedTask;
 
-
             if (context.User.HasClaim(c => c.Type == "EmailConfirmed"))
                 context.Succeed(requirement);
 

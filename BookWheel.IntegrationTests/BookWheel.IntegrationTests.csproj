@@ -19,7 +19,7 @@
       <ProjectReference Include="..\BookWheel.Infrastructure\BookWheel.Infrastructure.csproj" />
       <ProjectReference Include="..\BookWheel.UnitTests\BookWheel.UnitTests.csproj" />
     </ItemGroup>
-
+	
     <ItemGroup>
       <PackageReference Include="Moq" Version="4.20.70" />
         

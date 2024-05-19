@@ -7,6 +7,7 @@ using BookWheel.Infrastructure.Repositories;
 using BookWheel.UnitTests.Builders;
 using BookWheel.UnitTests.Domain.LocationAggregate;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,19 +21,25 @@ namespace BookWheel.IntegrationTests.RatingTests
         : IClassFixture<SharedDatabaseFixture>
     {
         private SharedDatabaseFixture Fixture { get; }
+        public IConfiguration Configuration { get; set; }
+
         public LocationReservationRateConfirm(SharedDatabaseFixture sharedDatabaseFixture)
         {
             Fixture = sharedDatabaseFixture;
+            Configuration = new ConfigurationBuilder()
+               .AddJsonFile("C:\\Users\\vuqar\\Desktop\\BookWheel\\BookWheel.Api\\appsettings.json")
+                .AddEnvironmentVariables()
+                .Build();
         }
-
+        
 
         [Fact]
         public async Task SuccessfullRateToReservation()
         {
             using var transaction = Fixture.DbConnection.BeginTransaction();
 
-            var wDbContext = Fixture.CreateContext(transaction);
-            var rDbContext = Fixture.CreateContext(transaction);
+            var wDbContext =  Fixture.CreateContext(transaction);
+            var rDbContext =  Fixture.CreateContext(transaction);
             var wUserRepo = new UserRepository(wDbContext);
             var wLocationRepo = new LocationRepository(wDbContext);
 
@@ -59,12 +66,12 @@ namespace BookWheel.IntegrationTests.RatingTests
             await wLocationRepo.AddLocationAsync(location);
             await wDbContext.SaveChangesAsync();
 
-            var ratingRepository = new RatingRepository(wDbContext);
+            var ratingRepository = new RatingRepository(wDbContext,Configuration);
 
             var ratingId = Guid.NewGuid();
 
             var rating = 
-                new RatingBuilder(locationId,reservationId)
+                new RatingBuilder(reservationId)
                 .WithId(ratingId).Build();
             
             await ratingRepository.AddRatingAsync(rating);
@@ -79,7 +86,6 @@ namespace BookWheel.IntegrationTests.RatingTests
 
             Assert.True(ratings.Count() != 0);
             Assert.NotNull(ratings.FirstOrDefault());
-            Assert.Equal(ratings[0].LocationId,locationId);
             Assert.Equal(ratings[0].ReservationId,reservationId);
         }
 

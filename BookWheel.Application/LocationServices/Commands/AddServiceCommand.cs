@@ -68,7 +68,7 @@ namespace BookWheel.Application.LocationServices.Commands
         public async Task Handle(AddServiceCommand request, CancellationToken cancellationToken)
         {
             var ownerId = Guid.Parse(CurrentUserService.GetCurrentUserId());
-            var spec = new GetOwnerLocationByIdSpecification(ownerId,request.LocationId);
+            var spec = new GetOwnerLocationByIdSpecification(request.LocationId,ownerId);
             var location = await LocationRepository.GetLocationBySpecificationAsync(spec);
 
             if (location is null)

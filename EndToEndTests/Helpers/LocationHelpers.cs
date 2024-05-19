@@ -24,8 +24,6 @@ namespace EndToEndTests.Helpers
             return setLocationMessage.StatusCode;
         }
 
-
-
         public static async Task<Guid> CreateOwnerAsync
             (
                 HttpClient httpClient,

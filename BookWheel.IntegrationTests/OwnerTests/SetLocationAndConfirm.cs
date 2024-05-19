@@ -21,10 +21,10 @@ public class SetLocationAndConfirm : IClassFixture<SharedDatabaseFixture>
     [Fact]
     public async Task SuccessfullySetsLocationToOwner()
     {
-        using (var transaction = await _sharedDatabaseFixture.DbConnection.BeginTransactionAsync())
-        {
-            var wContext = _sharedDatabaseFixture.CreateContext(transaction);
-            var rContext = _sharedDatabaseFixture.CreateContext(transaction);
+            using var transaction = await _sharedDatabaseFixture.DbConnection.BeginTransactionAsync();
+        
+            var wContext =  _sharedDatabaseFixture.CreateContext(transaction);
+            var rContext =  _sharedDatabaseFixture.CreateContext(transaction);
             var unitOfWork = new UnitOfWork(wContext);
             var userRepo = new UserRepository(wContext);
             var wLocationRepo = new LocationRepository(wContext);
@@ -49,15 +49,15 @@ public class SetLocationAndConfirm : IClassFixture<SharedDatabaseFixture>
             var locationExists = await rLocationRepo.CheckLocationBySpecificationAsync(spec);
             
             Assert.True(locationExists);
-        }
+        
     }
     
     [Fact]
     public async Task ThrowsExceptionWhenSettingLocationTwiceToOwner()
     {
-        using (var transaction = await _sharedDatabaseFixture.DbConnection.BeginTransactionAsync())
-        {
-            var wContext = _sharedDatabaseFixture.CreateContext(transaction);
+            using var transaction = await _sharedDatabaseFixture.DbConnection.BeginTransactionAsync();
+
+            var wContext =  _sharedDatabaseFixture.CreateContext(transaction);
             var unitOfWork = new UnitOfWork(wContext);
             var userRepo = new UserRepository(wContext);
             var wLocationRepo = new LocationRepository(wContext);
@@ -83,7 +83,7 @@ public class SetLocationAndConfirm : IClassFixture<SharedDatabaseFixture>
             }
             
             await Assert.ThrowsAsync<OwnerAlreadyHasLocationSet>(Action);
-        }
+        
     }
     
     

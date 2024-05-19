@@ -124,7 +124,7 @@ namespace BookWheel.Domain.LocationAggregate
         {
             Guard.Against.DuplicateService(services);
             Guard.Against.ServiceDoesNotExist(this,services);
-            Guard.Against.PastDate(startDate);
+            //Guard.Against.PastDate(startDate);
             
             var durationInMinutes = services.Sum(s=>s.MinuteDuration);
             var reservationTimeInterval = new TimeRange(startDate,TimeSpan.FromMinutes(durationInMinutes));
@@ -134,19 +134,23 @@ namespace BookWheel.Domain.LocationAggregate
             
             var overlappingReservations = GetOverlappingReservations(reservationTimeInterval);
 
+            bool doesOverlap = overlappingReservations.Count() != 0;
+            
             var reservationId = Guid.NewGuid();
 
-            if (overlappingReservations.Count() != 0)
+            int newBoxNumber = 1; // always defaults to 1
+
+            if (doesOverlap)
             {
                 if (overlappingReservations.Select(r => r.BoxNumber).Distinct().Count() == BoxCount)
                     throw new ReservationOverlapsException();
 
-                var newBoxNumber = overlappingReservations
+                newBoxNumber = overlappingReservations
                     .Select(r => r.BoxNumber)
                     .Count() + 1;
+            }
 
-                Reservation newReservation = 
-                    new Reservation
+            Reservation newReservation = new Reservation
                     (
                         reservationId,
                         userId,
@@ -156,19 +160,10 @@ namespace BookWheel.Domain.LocationAggregate
                         services.ToList()
                     );
 
-                ActiveReservations.Add(newReservation);
-                ConcurrencyToken = Guid.NewGuid();
-                Events.Add(new ReservationAddedEvent(userId,OwnerId,reservationId,reservationTimeInterval,Name));
-                return newReservation.Id;
-            }
-            else
-            {
-                Reservation newReservation = new Reservation(reservationId,userId, reservationTimeInterval, Id, 1,services.ToList());
-                ActiveReservations.Add(newReservation);
-                ConcurrencyToken = Guid.NewGuid();
-                Events.Add(new ReservationAddedEvent(userId,OwnerId,reservationId,reservationTimeInterval,Name));
-                return newReservation.Id;
-            }
+            ActiveReservations.Add(newReservation);
+            ConcurrencyToken = Guid.NewGuid();
+            Events.Add(new ReservationAddedEvent(userId, OwnerId, reservationId, reservationTimeInterval, Name));
+            return newReservation.Id;
         }
 
         public void CancelReservationOwner(Guid reservationId)

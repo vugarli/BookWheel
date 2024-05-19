@@ -3,6 +3,7 @@ using BookWheel.Infrastructure.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -21,8 +22,11 @@ namespace EndToEndTests
 
         private readonly MsSqlContainer msSqlContainer  = new MsSqlBuilder()
             .WithImage("mcr.microsoft.com/mssql/server:2022-preview-ubuntu-22.04")
+            .WithPassword("Vugar2003Vs$")
             .Build();
 
+
+        public SqlConnection Connection { get => new SqlConnection(msSqlContainer.GetConnectionString()); } 
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {

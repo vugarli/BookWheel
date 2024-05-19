@@ -19,7 +19,7 @@ public class RepositoryGetById  : IClassFixture<SharedDatabaseFixture>
     {
         using (var transaction = Fixture.DbConnection.BeginTransaction())
         {
-            var context = Fixture.CreateContext(transaction);
+            var context =  Fixture.CreateContext(transaction);
             var repo = new UserRepository(context);
             var Id = Guid.NewGuid();
             var Name = Guid.NewGuid().ToString();
@@ -29,7 +29,7 @@ public class RepositoryGetById  : IClassFixture<SharedDatabaseFixture>
             await repo.CreateCustomerAsync(customer);
             await context.SaveChangesAsync();
                 
-            var readRepo = new UserRepository(Fixture.CreateContext(transaction));
+            var readRepo = new UserRepository( Fixture.CreateContext(transaction));
             var spec = new GetCustomerByIdSpecification(Id);
             var customerFromRepo = await readRepo.GetCustomerBySpecificationAsync(spec);
 

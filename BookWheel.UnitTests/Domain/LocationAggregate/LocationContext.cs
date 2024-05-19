@@ -50,7 +50,7 @@ public class LocationContext
     /// <returns></returns>
     public static DateTime GetValidReservationDate(Location location)
     {
-        DateTime date = new DateTime(2024,01,01);
+        var date = DateTimeOffset.Now.Date;
         date += location.WorkingTimeRange.Start.ToTimeSpan();
         return date;
     }

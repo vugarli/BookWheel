@@ -24,8 +24,8 @@ public class LocationAddServices : IClassFixture<SharedDatabaseFixture>
     {
         using (var transaction = Fixture.DbConnection.BeginTransaction())
         {
-            var wContext = Fixture.CreateContext(transaction);
-            var rContext = Fixture.CreateContext(transaction);
+            var wContext =  Fixture.CreateContext(transaction);
+            var rContext =  Fixture.CreateContext(transaction);
             var wLocationRepo = new LocationRepository(wContext);
             var wOwnerRepo = new UserRepository(wContext);
             var rLocationRepo = new LocationRepository(rContext);
@@ -70,8 +70,8 @@ public class LocationAddServices : IClassFixture<SharedDatabaseFixture>
     {
         using (var transaction = Fixture.DbConnection.BeginTransaction())
         {
-            var wContext = Fixture.CreateContext(transaction);
-            var rContext = Fixture.CreateContext(transaction);
+            var wContext =  Fixture.CreateContext(transaction);
+            var rContext =  Fixture.CreateContext(transaction);
             var wLocationRepo = new LocationRepository(wContext);
             var wOwnerRepo = new UserRepository(wContext);
             var rLocationRepo = new LocationRepository(rContext);

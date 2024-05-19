@@ -23,9 +23,8 @@ public class RepositoryGetById : IClassFixture<SharedDatabaseFixture>
     [Fact]
     public async Task GetOwnerByIdAfterAddingIt()
     {
-        using (var transaction = Fixture.DbConnection.BeginTransaction())
-        {
-            var wContext = Fixture.CreateContext(transaction);
+            using var transaction = Fixture.DbConnection.BeginTransaction();
+            var wContext =  Fixture.CreateContext(transaction);
             var wRepo = new UserRepository(wContext);
 
             var Id = Guid.NewGuid();
@@ -36,8 +35,8 @@ public class RepositoryGetById : IClassFixture<SharedDatabaseFixture>
             await wRepo.CreateOwnerAsync(wOwner);
 
             await wContext.SaveChangesAsync();
-            
-            var rContext = Fixture.CreateContext(transaction);
+        
+            var rContext =  Fixture.CreateContext(transaction);
             var rRepo = new UserRepository(rContext);
 
             
@@ -47,7 +46,6 @@ public class RepositoryGetById : IClassFixture<SharedDatabaseFixture>
             Assert.NotNull(rOwner);
             Assert.Equal(rOwner.Id,Id);
             Assert.Equal(rOwner.Name,Name);
-        }
         
         
         

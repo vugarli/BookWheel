@@ -16,17 +16,11 @@ namespace BookWheel.Domain.LocationAggregate
         public string Name { get; private set; }
         public Guid OwnerId { get; private set; }
         public Point Coordinates { get; private set; }
-        
-        public int BoxCount { get; set; } = 1;
+        public int BoxCount { get; private set; } = 1;
         public TimeOnlyRange WorkingTimeRange { get; private set; }
         public List<Service> Services { get; init; } = new();
-        
         public List<Reservation> ActiveReservations { get; init; } = new();
-
-        [NotMapped]
-        public List<TimeOnly> TimeSlots { get; set; } = new();
-
-
+        public bool IsClosed { get; private set; }
         public Guid ConcurrencyToken { get; private set; }
 
         public Location
@@ -59,6 +53,20 @@ namespace BookWheel.Domain.LocationAggregate
             
             Services.Add(newService);
         }
+
+        
+        public void CloseLocation()
+        {
+            IsClosed = true;
+            ConcurrencyToken = Guid.NewGuid();
+        }
+
+        public void OpenLocation()
+        {
+            IsClosed = false;
+            ConcurrencyToken = Guid.NewGuid();
+        }
+
 
         public void RemoveService(Guid serviceToDeleteId)
         {
@@ -122,6 +130,7 @@ namespace BookWheel.Domain.LocationAggregate
             DateTimeOffset startDate
         )
         {
+            Guard.Against.NotClosedLocation(this);
             Guard.Against.DuplicateService(services);
             Guard.Against.ServiceDoesNotExist(this,services);
             //Guard.Against.PastDate(startDate);
@@ -142,7 +151,9 @@ namespace BookWheel.Domain.LocationAggregate
 
             if (doesOverlap)
             {
-                if (overlappingReservations.Select(r => r.BoxNumber).Distinct().Count() == BoxCount)
+                bool isOutOfBoxes = overlappingReservations.Select(r => r.BoxNumber).Distinct().Count() == BoxCount;
+
+                if (isOutOfBoxes)
                     throw new ReservationOverlapsException();
 
                 newBoxNumber = overlappingReservations
@@ -209,6 +220,45 @@ namespace BookWheel.Domain.LocationAggregate
                 .Where(r => r.ReservationTimeInterval.DoesOverlap(reservationInterval))
                 .ToList();
         }
+
+
+        #region updates
+
+        public void UpdateCoordinates(double latitude, double longitude)
+        {
+            Guard.Against.NotClosedLocation(this);
+            Guard.Against.InvalidCoordinates(latitude, longitude);
+
+            var gf = NetTopologySuite.NtsGeometryServices.Instance.CreateGeometryFactory(4326);
+            Coordinates = gf.CreatePoint(new NetTopologySuite.Geometries.Coordinate(latitude, longitude));
+        }
+
+        public void UpdateWorkingTime(TimeOnlyRange workingTimeRange)
+        {
+            Guard.Against.NotClosedLocation(this);
+            Guard.Against.HavingActiveReservations(this);
+
+            WorkingTimeRange = workingTimeRange;
+        }
+
+        public void UpdateBoxCount(int newBoxCount)
+        {
+            if(BoxCount < newBoxCount)
+                BoxCount = newBoxCount;
+            else if (BoxCount > newBoxCount)
+            {
+                var conflictingReservations = ActiveReservations.Where(r => r.BoxNumber >= newBoxCount);
+
+                if (conflictingReservations.Count() == 0)
+                    BoxCount = newBoxCount;
+                else
+                    throw new BoxCountIsInUseException();
+            }
+            ConcurrencyToken = Guid.NewGuid();
+        }
+
+        #endregion
+
 
     }
 }

@@ -13,6 +13,28 @@ namespace BookWheel.Domain.LocationAggregate.Extensions
     public static class LocationGuardExtensions
     {
 
+
+        public static void HavingActiveReservations(
+            this IGuardClause guardClause,
+            Location location)
+        {
+            if (location.ActiveReservations.Count() != 0)
+            {
+                throw new HasActiveReservationsException();
+            }
+        }
+
+        public static void NotClosedLocation(
+            this IGuardClause guardClause,
+            Location location)
+        {
+            if (!location.IsClosed)
+            {
+                throw new LocationIsClosedException();
+            }
+        }
+
+
         public static void DuplicateService(
             this IGuardClause guardClause,
             IEnumerable<Service> services)

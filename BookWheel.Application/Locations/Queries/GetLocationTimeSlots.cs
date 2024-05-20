@@ -1,4 +1,5 @@
-﻿using BookWheel.Domain.Repositories;
+﻿using BookWheel.Domain.Exceptions;
+using BookWheel.Domain.Repositories;
 using BookWheel.Domain.Specifications.Location;
 using Dapper;
 using MediatR;
@@ -34,6 +35,9 @@ namespace BookWheel.Application.Locations.Queries
         {
             var spec = new GetLocationByIdSpecification(request.locationId);
             var locaiton = await LocationRepository.GetLocationBySpecificationAsync(spec);
+
+            if (locaiton is null)
+                throw new LocationNotFoundException(request.locationId);
 
             return locaiton.GetTimeSlots();
         }

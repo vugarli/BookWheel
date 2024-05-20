@@ -38,6 +38,52 @@ namespace BookWheel.Api.Controllers
             return Ok();
         }
 
+        [HttpPatch("{LocationId:guid}/boxnumber")]
+        [Authorize(Policy = "Owner")]
+        public async Task<IActionResult> UpdateBoxNumberAsync
+            (
+            [FromHybrid] UpdateBoxNumberCommand updateBoxNumberCommand
+            )
+        {
+            await _mediator.Send(updateBoxNumberCommand);
+            return Ok();
+        }
+
+        [HttpPatch("{LocationId:guid}/workingtime")]
+        [Authorize(Policy = "Owner")]
+        public async Task<IActionResult> CloseLocationAsync
+            (
+            [FromHybrid] UpdateWorkingTimeCommand updateWorkingTimeCommand
+            )
+        {
+            await _mediator.Send(updateWorkingTimeCommand);
+            return Ok();
+        }
+
+        [HttpPost("{LocationId:guid}/close")]
+        [Authorize(Policy ="Owner")]
+        public async Task<IActionResult> CloseLocationAsync
+            (
+            [FromRoute] CloseLocationCommand closeLocationCommand
+            )
+        {
+            await _mediator.Send(closeLocationCommand);
+            return Ok();
+        }
+
+        [HttpPost("{LocationId:guid}/open")]
+        [Authorize(Policy = "Owner")]
+        public async Task<IActionResult> OpenLocationAsync
+            (
+            [FromRoute] OpenLocationCommand openLocationCommand
+            )
+        {
+            await _mediator.Send(openLocationCommand);
+            return Ok();
+        }
+
+
+
         [HttpGet]
         public async Task<IActionResult> GetAllLocations()
         {

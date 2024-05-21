@@ -37,6 +37,7 @@ namespace BookWheel.Application.Locations.Queries
                 userr.Name as OwnerName,
                 Coordinates.Lat as Lat,
                 Coordinates.Long as Long,
+                IsClosed,
                     (Select AVG(CAST(rate.StarCount AS float))
                 from Ratings rate
                 left join Reservation res

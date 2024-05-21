@@ -133,6 +133,8 @@ namespace BookWheel.Domain.LocationAggregate
             Guard.Against.NotClosedLocation(this);
             Guard.Against.DuplicateService(services);
             Guard.Against.ServiceDoesNotExist(this,services);
+
+            //TODO Test suite doesn't include pastdate check. Uncomment on prod
             //Guard.Against.PastDate(startDate);
             
             var durationInMinutes = services.Sum(s=>s.MinuteDuration);
@@ -177,7 +179,7 @@ namespace BookWheel.Domain.LocationAggregate
             return newReservation.Id;
         }
 
-        public void CancelReservationOwner(Guid reservationId)
+        public void CancelReservationByOwner(Guid reservationId)
         {
             Guard.Against.Default(reservationId);
             
@@ -190,9 +192,11 @@ namespace BookWheel.Domain.LocationAggregate
             }
         }
         
-        public void CancelReservationCustomer(Guid reservationId)
+        public void CancelReservationByCustomer(Guid reservationId)
         {
             Guard.Against.Default(reservationId);
+            
+            //TODO access check: if reservation belongs to the loged in customer
 
             var reservation = ActiveReservations.SingleOrDefault(r=>r.Id == reservationId);
 

@@ -10,9 +10,12 @@ namespace BookWheel.Application.Locations
     {
         public Guid Id { get; set; }
         public string LocationName { get; set; }
-        public double Rating { get; set; }
-        public string Lat { get; set; }
-        public string Long { get; set; }
+        public Guid OwnerId { get; set; }
         public string OwnerName { get; set; }
+        public double Lat { get; set; }
+        public double Long { get; set; }
+        public int BoxCount { get; set; }
+        public int Rating { get; set; }
+        public bool IsClosed { get; set; }
     }
 }

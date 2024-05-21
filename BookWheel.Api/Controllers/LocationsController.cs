@@ -49,6 +49,17 @@ namespace BookWheel.Api.Controllers
             return Ok();
         }
 
+        [HttpPatch("{LocationId:guid}/coordinates")]
+        [Authorize(Policy = "Owner")]
+        public async Task<IActionResult> CloseLocationAsync
+            (
+            [FromHybrid] UpdateCoordinatesCommand updateCoordinatesCommand
+            )
+        {
+            await _mediator.Send(updateCoordinatesCommand);
+            return Ok();
+        }
+
         [HttpPatch("{LocationId:guid}/workingtime")]
         [Authorize(Policy = "Owner")]
         public async Task<IActionResult> CloseLocationAsync
@@ -81,8 +92,6 @@ namespace BookWheel.Api.Controllers
             await _mediator.Send(openLocationCommand);
             return Ok();
         }
-
-
 
         [HttpGet]
         public async Task<IActionResult> GetAllLocations()

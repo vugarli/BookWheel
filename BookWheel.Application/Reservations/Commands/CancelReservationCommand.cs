@@ -69,10 +69,10 @@ namespace BookWheel.Application.Reservations.Commands
 
             if(role == "Owner")
             {
-                location.CancelReservationOwner(request.ReservationId);
+                location.CancelReservationByOwner(request.ReservationId);
             }else if(role == "Customer")
             {
-                location.CancelReservationCustomer(request.ReservationId);
+                location.CancelReservationByCustomer(request.ReservationId);
             }
 
             await UnitOfWork.SaveChangesAsync(cancellationToken);

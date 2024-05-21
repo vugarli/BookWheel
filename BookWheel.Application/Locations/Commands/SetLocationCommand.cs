@@ -34,7 +34,7 @@ namespace BookWheel.Application.Locations.Commands
             // -90 <= lat <= 90
             // -180 <= long <= 180
             RuleFor(c => c.Lat).NotEmpty().NotNull().Must(c=> c>=-90 && c<= 90).WithMessage("Latitude is invalid!");
-            RuleFor(c => c.Lat).NotEmpty().NotNull().Must(c=> c>=-180 && c<= 180).WithMessage("Longitude is invalid!");
+            RuleFor(c => c.Long).NotEmpty().NotNull().Must(c=> c>=-180 && c<= 180).WithMessage("Longitude is invalid!");
         }
     }
 

@@ -1,4 +1,5 @@
 ﻿using BookWheel.Application.Ratings.Commands;
+using BookWheel.Application.Reservations.Commands;
 using BookWheel.Application.Reservations.Queries;
 using HybridModelBinding;
 using MediatR;
@@ -41,6 +42,17 @@ namespace BookWheel.Api.Controllers
         public async Task<IActionResult> RateReservationAsync
             (
             [FromHybrid] RateReservationCommand command
+            )
+        {
+            await Mediator.Send(command);
+            return Ok();
+        }
+
+        [Authorize(Policy = "Customer")]
+        [HttpDelete("{ReservationId:guid}")]
+        public async Task<IActionResult> CancelReservationByCustomerAsync
+            (
+            [FromRoute] CancelReservationByCustomerCommand command
             )
         {
             await Mediator.Send(command);

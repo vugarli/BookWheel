@@ -24,13 +24,24 @@ namespace BookWheel.Domain.LocationAggregate.Extensions
             }
         }
 
+
+        public static void ClosedLocation(
+            this IGuardClause guardClause,
+            Location location)
+        {
+            if (location.IsClosed)
+            {
+                throw new LocationIsClosedException();
+            }
+        }
+
         public static void NotClosedLocation(
             this IGuardClause guardClause,
             Location location)
         {
             if (!location.IsClosed)
             {
-                throw new LocationIsClosedException();
+                throw new LocationShouldBeClosedException();
             }
         }
 

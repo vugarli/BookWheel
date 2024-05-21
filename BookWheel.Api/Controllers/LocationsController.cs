@@ -164,12 +164,11 @@ namespace BookWheel.Api.Controllers
             return Ok();
         }
         
-        [Authorize(Policy = "Customer")]
         [Authorize(Policy = "Owner")]
         [HttpDelete("{LocationId:guid}/reservations/{ReservationId:guid}")]
         public async Task<IActionResult> DeleteReservationAsync
             (
-            [FromHybrid] CancelReservationCommand command
+            [FromRoute] CancelReservationByOwnerCommand command
             )
         {
             await _mediator.Send(command);

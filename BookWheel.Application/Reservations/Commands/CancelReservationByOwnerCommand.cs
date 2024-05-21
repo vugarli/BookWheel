@@ -1,10 +1,12 @@
 ﻿using BookWheel.Application.Services;
 using BookWheel.Domain;
+using BookWheel.Domain.Exceptions;
 using BookWheel.Domain.Repositories;
 using BookWheel.Domain.Specifications.Location;
 using FluentValidation;
 using HybridModelBinding;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
@@ -15,22 +17,20 @@ using System.Threading.Tasks;
 
 namespace BookWheel.Application.Reservations.Commands
 {
-    public class CancelReservationCommand : IRequest
+    public class CancelReservationByOwnerCommand : IRequest
     {
-        [HybridBindProperty(Source.Route)]
-        [Obsolete]
+        [FromRoute] 
         public Guid LocationId { get; set; }
 
-        [HybridBindProperty(Source.Route)]
-        [Obsolete]
+        [FromRoute]
         public Guid ReservationId { get; set; }
     }
 
 
-    public class CancelReservationCommandValidator
-        : AbstractValidator<CancelReservationCommand>
+    public class CancelReservationByOwnerCommandValidator
+        : AbstractValidator<CancelReservationByOwnerCommand>
     {
-        public CancelReservationCommandValidator()
+        public CancelReservationByOwnerCommandValidator()
         {
             RuleFor(c => c.LocationId).NotEmpty().NotNull().WithMessage("Please provide LocationId");
             RuleFor(c => c.ReservationId).NotEmpty().NotNull().WithMessage("Please provide ReservationId");
@@ -39,9 +39,9 @@ namespace BookWheel.Application.Reservations.Commands
         }
     }
 
-    public class CancelReservationCommandHandler : IRequestHandler<CancelReservationCommand>
+    public class CancelReservationByOwnerCommandHandler : IRequestHandler<CancelReservationByOwnerCommand>
     {
-        public CancelReservationCommandHandler
+        public CancelReservationByOwnerCommandHandler
             (
             ILocationRepository locationRepository,
             IUnitOfWork unitOfWork,
@@ -57,23 +57,19 @@ namespace BookWheel.Application.Reservations.Commands
         public IUnitOfWork UnitOfWork { get; }
         public ICurrentUserService CurrentUserService { get; }
 
-        public async Task Handle(CancelReservationCommand request, CancellationToken cancellationToken)
+        public async Task Handle(CancelReservationByOwnerCommand request, CancellationToken cancellationToken)
         {
-            var spec = new GetLocationByIdSpecification(request.LocationId);
+            var ownerId = Guid.Parse(CurrentUserService.GetCurrentUserId());
+
+            var spec = new GetOwnerLocationByIdSpecification(request.LocationId,ownerId);
+
             var location = await LocationRepository.GetLocationBySpecificationAsync(spec);
 
             if (location is null)
-                throw new Exception("Location not found!");
+                throw new LocationNotFoundException(request.LocationId);
 
-            var role = CurrentUserService.GetCurrentUserType();
 
-            if(role == "Owner")
-            {
-                location.CancelReservationByOwner(request.ReservationId);
-            }else if(role == "Customer")
-            {
-                location.CancelReservationByCustomer(request.ReservationId);
-            }
+            location.CancelReservationByOwner(request.ReservationId);
 
             await UnitOfWork.SaveChangesAsync(cancellationToken);
         }

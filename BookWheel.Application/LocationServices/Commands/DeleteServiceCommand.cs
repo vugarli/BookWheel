@@ -1,4 +1,5 @@
-﻿using BookWheel.Domain;
+﻿using BookWheel.Application.Services;
+using BookWheel.Domain;
 using BookWheel.Domain.Repositories;
 using BookWheel.Domain.Specifications.Location;
 using FluentValidation;
@@ -41,20 +42,26 @@ namespace BookWheel.Application.LocationServices.Commands
     {
         public IUnitOfWork UnitOfWork { get; }
         public ILocationRepository LocationRepository { get; }
+        public ICurrentUserService CurrentUserService { get; }
+
         public DeleteServiceCommandHandler
             (
             ILocationRepository locationRepository,
+            ICurrentUserService currentUserService,
             IUnitOfWork unitOfWork
             )
         {
             LocationRepository = locationRepository;
+            CurrentUserService = currentUserService;
             UnitOfWork = unitOfWork;
         }
 
 
         public async Task Handle(DeleteServiceCommand request, CancellationToken cancellationToken)
         {
-            var spec = new GetLocationByIdSpecification(request.LocationId);
+            var ownerId = Guid.Parse(CurrentUserService.GetCurrentUserId());
+
+            var spec = new GetOwnerLocationByIdSpecification(request.LocationId, ownerId);
             var locaiton = await LocationRepository.GetLocationBySpecificationAsync(spec);
 
             if (locaiton is null)

@@ -1,4 +1,5 @@
-﻿using BookWheel.Domain;
+﻿using BookWheel.Application.Services;
+using BookWheel.Domain;
 using BookWheel.Domain.Exceptions;
 using BookWheel.Domain.Repositories;
 using BookWheel.Domain.Specifications.Location;
@@ -50,19 +51,24 @@ namespace BookWheel.Application.Locations.Commands
         public UpdateWorkingTimeCommandHandler
             (
             ILocationRepository locationRepository,
+            ICurrentUserService currentUserService,
             IUnitOfWork unitOfWork
             )
         {
             LocationRepository = locationRepository;
+            CurrentUserService = currentUserService;
             UnitOfWork = unitOfWork;
         }
 
         public ILocationRepository LocationRepository { get; }
+        public ICurrentUserService CurrentUserService { get; }
         public IUnitOfWork UnitOfWork { get; }
 
         public async Task Handle(UpdateWorkingTimeCommand request, CancellationToken cancellationToken)
         {
-            var spec = new GetLocationByIdSpecification(request.LocationId);
+            var ownerId = Guid.Parse(CurrentUserService.GetCurrentUserId());
+
+            var spec = new GetOwnerLocationByIdSpecification(request.LocationId, ownerId);
 
             var location = await LocationRepository.GetLocationBySpecificationAsync(spec);
 

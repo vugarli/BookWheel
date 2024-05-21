@@ -130,7 +130,7 @@ namespace BookWheel.Domain.LocationAggregate
             DateTimeOffset startDate
         )
         {
-            Guard.Against.NotClosedLocation(this);
+            Guard.Against.ClosedLocation(this);
             Guard.Against.DuplicateService(services);
             Guard.Against.ServiceDoesNotExist(this,services);
 
@@ -195,8 +195,6 @@ namespace BookWheel.Domain.LocationAggregate
         public void CancelReservationByCustomer(Guid reservationId)
         {
             Guard.Against.Default(reservationId);
-            
-            //TODO access check: if reservation belongs to the loged in customer
 
             var reservation = ActiveReservations.SingleOrDefault(r=>r.Id == reservationId);
 

@@ -1,18 +1,14 @@
-﻿using BookWheel.Api.CustomAttribute;
-using BookWheel.Application.Locations.Commands;
+﻿using BookWheel.Application.Locations.Commands;
 using BookWheel.Application.Locations.Queries;
 using BookWheel.Application.LocationServices.Commands;
 using BookWheel.Application.LocationServices.Queries;
 using BookWheel.Application.Reservations.Commands;
 using BookWheel.Application.Reservations.Queries;
-using BookWheel.Domain.Exceptions;
 using HybridModelBinding;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RESTFulSense.Controllers;
-using System.Net.Mime;
 
 namespace BookWheel.Api.Controllers
 {
@@ -46,6 +42,18 @@ namespace BookWheel.Api.Controllers
             )
         {
             await _mediator.Send(updateBoxNumberCommand);
+            return Ok();
+        }
+
+
+        [HttpPut("{LocationId:guid}")]
+        [Authorize(Policy = "Owner")]
+        public async Task<IActionResult> UpdateLocationAsync
+            (
+            [FromHybrid] UpdateLocationCommand updateLocationCommand
+            )
+        {
+            await _mediator.Send(updateLocationCommand);
             return Ok();
         }
 
@@ -106,6 +114,7 @@ namespace BookWheel.Api.Controllers
         }
 
         [HttpPost("{LocationId:guid}/services")]
+        [Authorize(Policy = "Owner")]
         public async Task<IActionResult> AddLocationServiceAsync
             (
             [FromHybrid] AddServiceCommand command 

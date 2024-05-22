@@ -1,5 +1,6 @@
 ﻿using BookWheel.Application.Services;
 using BookWheel.Domain;
+using BookWheel.Domain.Exceptions;
 using BookWheel.Domain.Repositories;
 using BookWheel.Domain.Specifications.Location;
 using FluentValidation;
@@ -65,7 +66,7 @@ namespace BookWheel.Application.LocationServices.Commands
             var locaiton = await LocationRepository.GetLocationBySpecificationAsync(spec);
 
             if (locaiton is null)
-                throw new Exception("Location not found");
+                throw new LocationNotFoundException(request.LocationId);
 
             locaiton.RemoveService(request.ServiceId);
 

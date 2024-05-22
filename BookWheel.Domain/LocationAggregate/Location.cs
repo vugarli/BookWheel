@@ -109,8 +109,8 @@ namespace BookWheel.Domain.LocationAggregate
 
                     reservations.Remove(reservation);
                 }
-                    groupedTimeTables[b].RemoveAll(r => timeOnlyRange.DoesContain(r));
-                    groupedTimeTables[b].Insert(0, timeOnlyRange.End);
+                groupedTimeTables[b].RemoveAll(r => timeOnlyRange.DoesContain(r));
+                groupedTimeTables[b].Insert(0, timeOnlyRange.End);
             }
 
             }
@@ -260,7 +260,6 @@ namespace BookWheel.Domain.LocationAggregate
         }
 
         #endregion
-
 
     }
 }

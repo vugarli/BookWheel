@@ -23,6 +23,7 @@ namespace BookWheel.Application
                 );
 
                 c.AddOpenBehavior(typeof(ValidationBehaviour<,>));
+                c.AddOpenBehavior(typeof(LoggingBehaviour<,>));
             });
 
 

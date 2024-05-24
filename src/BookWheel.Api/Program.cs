@@ -8,6 +8,7 @@ using BookWheel.Application.Auth;
 using BookWheel.Domain.Services;
 using BookWheel.Infrastructure;
 using BookWheel.Infrastructure.Identity;
+using FluentAssertions.Common;
 using HybridModelBinding;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -18,9 +19,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Events;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateBootstrapLogger(); ;
+
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -59,10 +67,13 @@ builder.Services.AddSwaggerGen(c =>
 
 
 
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSerilog();
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
@@ -126,7 +137,7 @@ options.Filters.Add(new ExceptionFilter())
 
 var app = builder.Build();
 
-
+app.UseSerilogRequestLogging();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

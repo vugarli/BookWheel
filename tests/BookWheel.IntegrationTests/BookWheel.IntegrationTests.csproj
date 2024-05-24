@@ -8,21 +8,26 @@
 
     <ItemGroup>
       <Reference Include="Microsoft.Data.SqlClient">
-        <HintPath>..\..\..\.nuget\packages\microsoft.data.sqlclient\5.1.4\ref\net6.0\Microsoft.Data.SqlClient.dll</HintPath>
+        <HintPath>..\..\..\..\.nuget\packages\microsoft.data.sqlclient\5.1.4\ref\net6.0\Microsoft.Data.SqlClient.dll</HintPath>
       </Reference>
         <PackageReference Include="xunit" Version="2.5.3" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\BookWheel.Infrastructure\BookWheel.Infrastructure.csproj" />
-      <ProjectReference Include="..\BookWheel.UnitTests\BookWheel.UnitTests.csproj" />
-    </ItemGroup>
+    
 	
     <ItemGroup>
       <PackageReference Include="Moq" Version="4.20.70" />
         
+    </ItemGroup>
+
+    
+	
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\BookWheel.Application\BookWheel.Application.csproj" />
+      <ProjectReference Include="..\..\src\BookWheel.Infrastructure\BookWheel.Infrastructure.csproj" />
+      <ProjectReference Include="..\BookWheel.UnitTests\BookWheel.UnitTests.csproj" />
     </ItemGroup>
 
 </Project>

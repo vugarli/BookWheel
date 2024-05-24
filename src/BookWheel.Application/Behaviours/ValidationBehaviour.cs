@@ -2,6 +2,7 @@
 using BookWheel.Application.Exceptions;
 using FluentValidation;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,16 @@ namespace BookWheel.Application.Behaviours
     public class ValidationBehaviour<TReq, TRes> : IPipelineBehavior<TReq, TRes>
     {
         public IEnumerable<IValidator<TReq>> _validators { get; }
-        public ValidationBehaviour(IEnumerable<IValidator<TReq>> validators)
+        public ILogger Logger { get; }
+
+        public ValidationBehaviour
+            (
+            IEnumerable<IValidator<TReq>> validators,
+            ILogger<ValidationBehaviour<TReq,TRes>> logger
+            )
         {
             _validators = validators;
+            Logger = logger;
         }
 
 
@@ -26,6 +34,8 @@ namespace BookWheel.Application.Behaviours
             CancellationToken cancellationToken
             )
         {
+            
+
             var context = new ValidationContext<TReq>(request);
 
             var validationResults = await Task.WhenAll(_validators
@@ -45,7 +55,7 @@ namespace BookWheel.Application.Behaviours
                     foreach (var errorDetail in error.ToList())
                         validationEx.UpsertDataList(error.Key, errorDetail.ErrorMessage);
                 }
-
+                Logger.LogError($"Validation error:{errors}");
                 throw validationEx;
             }
 

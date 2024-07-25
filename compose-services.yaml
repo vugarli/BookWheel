@@ -1,20 +1,23 @@
 version: '3.1'
 services:
   api-service:
-    image: bookwheelapi
+    image: satisfiedblackhole/bookwheelapi
     ports:
       - 8080:8080
       - 443:443
     depends_on:
       - "sqlserver"
     environment:
-      ConnectionStrings_MSSQL: ${cnstring}
-
+      ConnectionStrings__MSSQL: ${cnstring}
   sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-preview-ubuntu-22.04
+    image: mcr.microsoft.com/mssql/server:2019-latest
     ports:
       - 1433:1433
     environment:
       ACCEPT_EULA: Y
       MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
       MSSQL_PID: Developer
+    volumes:
+      - "./data/:/var/opt/mssql/data/"
+      - "./log/:/var/opt/mssql/log/"
+      - "./secrets/:/var/opt/mssql/secrets/"

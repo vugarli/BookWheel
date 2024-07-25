@@ -17,10 +17,6 @@ namespace BookWheel.Infrastructure
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,IConfiguration configuration)
         {
-
-
-
-
             services.AddDbContext<ApplicationDbContext>(opt=>
                 opt.UseSqlServer(configuration.GetConnectionString("MSSQL"), opt => opt.UseNetTopologySuite())
                 );

@@ -8,9 +8,7 @@ using BookWheel.Application.Auth;
 using BookWheel.Domain.Services;
 using BookWheel.Infrastructure;
 using BookWheel.Infrastructure.Identity;
-using FluentAssertions.Common;
 using HybridModelBinding;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -20,8 +18,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using Serilog.Events;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -140,12 +136,12 @@ var app = builder.Build();
 app.UseSerilogRequestLogging();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 
 app.UseCors(builder =>

@@ -5,7 +5,10 @@
 
 # dotenv files
 .env
-
+*.env
+*.env.example
+*.env.local
+*.env.staging
 # User-specific files
 *.rsuser
 *.suo

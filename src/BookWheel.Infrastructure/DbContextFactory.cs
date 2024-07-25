@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Moq;
+
 
 namespace BookWheel.Infrastructure
 {
@@ -21,7 +21,7 @@ namespace BookWheel.Infrastructure
             //    .AddJsonFile("appsettings.json")
             //    .Build();
 
-            var context = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer("Server=localhost;Database=BookWheel;User Id=SA;Password=Vugar2003Vs$;TrustServerCertificate=True;",x=> x.UseNetTopologySuite()).Options, null);
+            var context = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer("Server=sqlserver;Database=BookWheel;User Id=SA;Password=Vugar2003Vs$;TrustServerCertificate=True;",x=> x.UseNetTopologySuite()).Options, null);
             
             return context;
         }
@@ -35,7 +35,7 @@ namespace BookWheel.Infrastructure
             //   .SetBasePath(Directory.GetCurrentDirectory())
             //   .AddJsonFile("appsettings.json")
             //   .Build();
-            return new ApplicationIdentityDbContext(new DbContextOptionsBuilder<ApplicationIdentityDbContext>().UseSqlServer("Server=localhost;Database=BookWheel;User Id=SA;Password=Vugar2003Vs$;TrustServerCertificate=True;").Options);
+            return new ApplicationIdentityDbContext(new DbContextOptionsBuilder<ApplicationIdentityDbContext>().UseSqlServer("Server=sqlserver;Database=BookWheel;User Id=SA;Password=Vugar2003Vs$;TrustServerCertificate=True;").Options);
         }
     }
 

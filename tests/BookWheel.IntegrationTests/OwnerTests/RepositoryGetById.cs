@@ -8,8 +8,7 @@ using Xunit;
 
 namespace BookWheel.IntegrationTests.OwnerTests;
 
-
-
+[Collection("Sequential")]
 public class RepositoryGetById : IClassFixture<SharedDatabaseFixture>
 {
 

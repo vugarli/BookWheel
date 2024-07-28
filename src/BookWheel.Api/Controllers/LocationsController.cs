@@ -23,6 +23,12 @@ namespace BookWheel.Api.Controllers
             _mediator = mediator;
         }
 
+
+        /// <summary>
+        /// Sets location of the owner.
+        /// </summary>
+        /// <param name="setLocationCommand"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Policy ="CanSetLocation")]
         public async Task<IActionResult> SetLocationAsync
@@ -34,6 +40,11 @@ namespace BookWheel.Api.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Updates the number of boxes of the specified location.
+        /// </summary>
+        /// <param name="updateBoxNumberCommand"></param>
+        /// <returns></returns>
         [HttpPatch("{LocationId:guid}/boxnumber")]
         [Authorize(Policy = "Owner")]
         public async Task<IActionResult> UpdateBoxNumberAsync
@@ -57,9 +68,10 @@ namespace BookWheel.Api.Controllers
             return Ok();
         }
 
+
         [HttpPatch("{LocationId:guid}/coordinates")]
         [Authorize(Policy = "Owner")]
-        public async Task<IActionResult> CloseLocationAsync
+        public async Task<IActionResult> UpdateLocationCoordinatesAsync
             (
             [FromHybrid] UpdateCoordinatesCommand updateCoordinatesCommand
             )
@@ -70,7 +82,7 @@ namespace BookWheel.Api.Controllers
 
         [HttpPatch("{LocationId:guid}/workingtime")]
         [Authorize(Policy = "Owner")]
-        public async Task<IActionResult> CloseLocationAsync
+        public async Task<IActionResult> UpdateWorkingTimeAsync
             (
             [FromHybrid] UpdateWorkingTimeCommand updateWorkingTimeCommand
             )

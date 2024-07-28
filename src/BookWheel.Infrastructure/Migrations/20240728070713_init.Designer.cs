@@ -13,8 +13,8 @@ using NetTopologySuite.Geometries;
 namespace BookWheel.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240504112435_asdadad")]
-    partial class asdadad
+    [Migration("20240728070713_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,6 +49,10 @@ namespace BookWheel.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -74,6 +78,10 @@ namespace BookWheel.Infrastructure.Migrations
                     b.Property<int>("BoxCount")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Point>("Coordinates")
                         .IsRequired()
                         .HasColumnType("geography");
@@ -84,6 +92,9 @@ namespace BookWheel.Infrastructure.Migrations
                     b.Property<DateTime>("DeletedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsClosed")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
@@ -93,12 +104,6 @@ namespace BookWheel.Infrastructure.Migrations
 
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<byte[]>("Version")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
 
                     b.HasKey("Id");
 
@@ -204,13 +209,10 @@ namespace BookWheel.Infrastructure.Migrations
                     b.Property<DateTime>("DeletedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("LocationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("ReservationId")
+                    b.Property<Guid?>("ReservationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("StarCount")
@@ -220,8 +222,6 @@ namespace BookWheel.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LocationId");
 
                     b.ToTable("Ratings");
                 });
@@ -349,15 +349,6 @@ namespace BookWheel.Infrastructure.Migrations
                 {
                     b.HasOne("BookWheel.Domain.LocationAggregate.Location", null)
                         .WithMany("Services")
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("BookWheel.Domain.RatingAggregate.RatingRoot", b =>
-                {
-                    b.HasOne("BookWheel.Domain.LocationAggregate.Location", null)
-                        .WithMany()
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

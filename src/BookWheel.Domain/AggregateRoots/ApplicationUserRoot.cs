@@ -25,18 +25,21 @@ namespace BookWheel.Domain.AggregateRoots
             string name,
             string surname,
             string email,
+            string phoneNumber,
             ApplicationUserType userType
             )
         {
             Name = name;
             Surname = surname;
             Email = email;
+            PhoneNumber = phoneNumber;
             UserType = userType;
         }
 
         public string Name { get; private set; }
         public string Surname { get; private set; }
         public string Email { get; private set; }
+        public string PhoneNumber { get; private set; }
         public ApplicationUserType UserType { get; private set; }
     }
 
@@ -50,8 +53,9 @@ namespace BookWheel.Domain.AggregateRoots
             (Guid id,
             string name,
             string surname,
-            string email
-            ) : base( name, surname, email, ApplicationUserType.Customer )
+            string email,
+            string phoneNumber
+            ) : base( name, surname, email, phoneNumber, ApplicationUserType.Customer )
         {
             Id = id;
         }
@@ -72,8 +76,9 @@ namespace BookWheel.Domain.AggregateRoots
             Guid id,
             string name,
             string surname,
-            string email
-            ) : base(name, surname, email, ApplicationUserType.Owner)
+            string email, 
+            string phoneNumber
+            ) : base(name, surname, email, phoneNumber, ApplicationUserType.Owner)
         {
             Id = id;
         }

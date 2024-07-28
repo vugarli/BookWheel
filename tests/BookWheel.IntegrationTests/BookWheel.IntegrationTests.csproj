@@ -10,6 +10,7 @@
       <Reference Include="Microsoft.Data.SqlClient">
         <HintPath>..\..\..\..\.nuget\packages\microsoft.data.sqlclient\5.1.4\ref\net6.0\Microsoft.Data.SqlClient.dll</HintPath>
       </Reference>
+      <PackageReference Include="Testcontainers.MsSql" Version="3.9.0" />
         <PackageReference Include="xunit" Version="2.5.3" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />

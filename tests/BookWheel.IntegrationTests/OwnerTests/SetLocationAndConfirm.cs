@@ -8,7 +8,7 @@ using BookWheel.UnitTests.Builders;
 using Xunit;
 
 namespace BookWheel.IntegrationTests.OwnerTests;
-
+[Collection("Sequential")]
 public class SetLocationAndConfirm : IClassFixture<SharedDatabaseFixture>
 {
     private readonly SharedDatabaseFixture _sharedDatabaseFixture;

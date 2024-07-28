@@ -44,41 +44,65 @@ namespace BookWheel.Api.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponse>> Login([FromBody] LoginDto loginDto)
         {
-            //try
-            //{
-                var authResponse = await _authenticationService.LoginAsync(loginDto);
-                return Ok(authResponse);
-            //}
-            //catch (AuthenticationValidationException validationException)
-            //{
-            //    return BadRequest(validationException);
-            //}
-            //catch (Exception ex)
-            //{
-            //    return BadRequest("Something bad happened, contact support!");
-            //}
+            var authResponse = await _authenticationService.LoginAsync(loginDto);
+            
+            if (!authResponse.Result)
+                return Unauthorized();
+
+            return Ok(authResponse);
+        }
+
+        [HttpGet("sendconfirmation")]
+        public async Task<ActionResult> ChangePasswordAsync
+            (
+                [FromQuery] string email
+            )
+        {
+            var result = await _authenticationService.SendEmailConfirmationAsync(email);
+            return Ok();
+        }
+
+        [HttpGet("confirmemail")]
+        public async Task<ActionResult> ChangePasswordAsync
+            (
+                [FromQuery] string token,
+                [FromQuery] string email
+            )
+        {
+            var result = await _authenticationService.ConfirmEmailAsync(token,email);
+            
+            if (!result)
+                return BadRequest();
+            
+            return Ok();
+        }
+
+
+        [HttpPost("changepassword")]
+        [Authorize()]
+        public async Task<ActionResult> ChangePasswordAsync
+            (
+                [FromBody] ChangePasswordDto changePasswordDto
+            )
+        {
+            await _authenticationService.ChangePasswordAsync(changePasswordDto);
+            return Ok();
         }
 
         [HttpPost("register")]
+        [ProducesResponseType(typeof(AuthResponse),StatusCodes.Status200OK)]
         public async Task<ActionResult<AuthResponse>> Register
             (
             [FromBody] RegisterDto registerDto
             )
         {
-            //try
-            //{
-                await _authenticationService.RegisterAsync(registerDto);
-                return Ok();
-            //}
-            //catch (AuthenticationValidationException validationException)
-            //{
-            //    return BadRequest(validationException);
-            //}
-            //catch (Exception ex)
-            //{
-            //    return BadRequest("Something bad happened, contact support!");
-            //}
-        }
+            var result = await _authenticationService.RegisterAsync(registerDto);
+            
+            if(!result)
+                return BadRequest();
+            
+            return Ok();
+         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("info")]

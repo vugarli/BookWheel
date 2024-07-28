@@ -4,7 +4,7 @@ using BookWheel.UnitTests.Builders;
 using Xunit;
 
 namespace BookWheel.IntegrationTests.CustomerTests;
-
+[Collection("Sequential")]
 public class RepositoryGetById  : IClassFixture<SharedDatabaseFixture>
 {
     public SharedDatabaseFixture Fixture { get; set; }

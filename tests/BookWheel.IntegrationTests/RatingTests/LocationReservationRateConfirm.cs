@@ -8,7 +8,6 @@ using BookWheel.UnitTests.Builders;
 using BookWheel.UnitTests.Domain.LocationAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +16,7 @@ using Xunit;
 
 namespace BookWheel.IntegrationTests.RatingTests
 {
+    [Collection("Sequential")]
     public class LocationReservationRateConfirm
         : IClassFixture<SharedDatabaseFixture>
     {
@@ -26,10 +26,9 @@ namespace BookWheel.IntegrationTests.RatingTests
         public LocationReservationRateConfirm(SharedDatabaseFixture sharedDatabaseFixture)
         {
             Fixture = sharedDatabaseFixture;
-            Configuration = new ConfigurationBuilder()
-               .AddJsonFile("C:\\Users\\vuqar\\Desktop\\BookWheel\\BookWheel.Api\\appsettings.json")
-                .AddEnvironmentVariables()
-                .Build();
+            var mock = new Moq.Mock<IConfiguration>();
+            mock.Setup(c=>c.GetSection("ConnectionStrings")["MSSQL"]).Returns(Fixture.CONNECTION_STRING);
+            Configuration = mock.Object;
         }
         
 

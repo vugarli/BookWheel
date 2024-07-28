@@ -27,7 +27,11 @@ namespace BookWheel.Infrastructure
                 .AddIdentity<ApplicationIdentityUser, IdentityRole<Guid>>()
                 .AddRoles<IdentityRole<Guid>>()
                 .AddDefaultTokenProviders()
+                .AddTokenProvider<EmailConfirmationTokenProvider<ApplicationIdentityUser>>("emailconfirmation")
                 .AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+            
+            services.Configure<EmailConfirmationTokenProviderOptions>(opt =>
+            opt.TokenLifespan = TimeSpan.FromDays(3));
             
             services.AddScoped<ITokenService, TokenService>();
 
@@ -70,6 +74,9 @@ namespace BookWheel.Infrastructure
                 options.User.AllowedUserNameCharacters =
                         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = false;
+
+                options.Tokens.EmailConfirmationTokenProvider = "emailconfirmation";
+                
             });
 
             return services;

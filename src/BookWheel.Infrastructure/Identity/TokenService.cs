@@ -34,7 +34,7 @@ namespace BookWheel.Infrastructure.Identity
 
             var key = Encoding.ASCII.GetBytes(AppConstants.JWTKEY);
             var applicationUser = await _userManager.FindByNameAsync(userName);
-
+            
             //todo check for null
 
             var user = _dbContext.Set<ApplicationUserRoot>()

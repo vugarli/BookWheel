@@ -5,25 +5,25 @@
 namespace BookWheel.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class locationfix : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "IsClosed",
-                table: "Location",
-                type: "bit",
+            migrationBuilder.AddColumn<string>(
+                name: "PhoneNumber",
+                table: "ApplicationUserRoot",
+                type: "nvarchar(max)",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: "");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "IsClosed",
-                table: "Location");
+                name: "PhoneNumber",
+                table: "ApplicationUserRoot");
         }
     }
 }

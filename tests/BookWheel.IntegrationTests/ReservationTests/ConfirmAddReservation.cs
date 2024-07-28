@@ -7,7 +7,7 @@ using Xunit;
 
 
 namespace BookWheel.IntegrationTests.ReservationTests;
-
+[Collection("Sequential")]
 public class ConfirmAddReservation :IClassFixture<SharedDatabaseFixture>
 {
     public SharedDatabaseFixture Fixture { get; set; }

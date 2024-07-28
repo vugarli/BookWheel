@@ -6,7 +6,7 @@ using BookWheel.UnitTests.Builders;
 using Xunit;
 
 namespace BookWheel.IntegrationTests.LocationTests;
-
+[Collection("Sequential")]
 public class LocationAddServices : IClassFixture<SharedDatabaseFixture>
 {
     public SharedDatabaseFixture Fixture { get; set; }

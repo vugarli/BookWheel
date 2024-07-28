@@ -5,25 +5,25 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Testcontainers.MsSql;
+using Xunit;
 
 namespace BookWheel.IntegrationTests;
 
-public class SharedDatabaseFixture : IDisposable
+public class SharedDatabaseFixture : IDisposable, IAsyncLifetime
 {
     private static object _lock { get; set; } = new();
-    private static bool _databaseInitialized;
-    public const string CONNECTION_STRING = "Server=localhost;Database=BookWheel.IntegrationTests;User Id=SA;Password=Vugar2003Vs$;TrustServerCertificate=True";
+    private bool _databaseInitialized;
+    public string CONNECTION_STRING;
     public DbConnection DbConnection { get; set; }
 
-    public SharedDatabaseFixture()
-    {
-        DbConnection = new SqlConnection(CONNECTION_STRING);
+    private readonly MsSqlContainer msSqlContainer = new MsSqlBuilder()
+            .WithImage("mcr.microsoft.com/mssql/server:2022-preview-ubuntu-22.04")
+            .WithPassword("Vugar2003Vs$")
+            .Build();
 
-        //Seed
-        Migrate();
-        
-        DbConnection.Open();
-    }
+    public SqlConnection Connection 
+    { get => new SqlConnection(msSqlContainer.GetConnectionString()); }
 
 
     private void Migrate()
@@ -68,5 +68,24 @@ public class SharedDatabaseFixture : IDisposable
     {
         DbConnection.Close();
         DbConnection.Dispose();
+    }
+
+    public async Task InitializeAsync()
+    {
+        await msSqlContainer.StartAsync();
+        var b = new SqlConnectionStringBuilder(msSqlContainer.GetConnectionString());
+        b.InitialCatalog = "BookWheel.IntegrationTests";
+        CONNECTION_STRING= b.ToString();
+        DbConnection = new SqlConnection(CONNECTION_STRING);
+
+        //Seed
+        Migrate();
+
+        DbConnection.Open();
+    }
+
+    async Task IAsyncLifetime.DisposeAsync()
+    {
+        await msSqlContainer.StopAsync();
     }
 }

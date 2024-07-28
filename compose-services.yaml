@@ -1,7 +1,8 @@
 version: '3.1'
 services:
   api-service:
-    image: satisfiedblackhole/bookwheelapi
+    #image: satisfiedblackhole/bookwheelapi
+    build: .
     ports:
       - 8080:8080
       - 443:443
@@ -9,6 +10,7 @@ services:
       - "sqlserver"
     environment:
       ConnectionStrings__MSSQL: ${cnstring}
+      EmailClient: papercut
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2019-latest
     ports:
@@ -21,3 +23,8 @@ services:
       - "./data/:/var/opt/mssql/data/"
       - "./log/:/var/opt/mssql/log/"
       - "./secrets/:/var/opt/mssql/secrets/"
+  papercut:
+    image: jijiechen/papercut:latest
+    ports:
+      - 25:25
+      - 37408:37408

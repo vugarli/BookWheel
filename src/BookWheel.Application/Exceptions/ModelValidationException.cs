@@ -10,8 +10,8 @@ namespace BookWheel.Application.Exceptions
     public class ModelValidationException 
         : Xeption
     {
-        public ModelValidationException()
-            : base("Validation errors occured. Please check errors for details.")
+        public ModelValidationException(string s = "Validation errors occured. Please check errors for details.")
+            : base(s)
         {
             
         }

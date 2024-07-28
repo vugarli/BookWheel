@@ -35,7 +35,7 @@ public class CustomerBuilder
 
     public CustomerUserRoot Build()
     {
-        return new CustomerUserRoot(Id,Name,Surname,Email);
+        return new CustomerUserRoot(Id,Name,Surname,Email, "+994518209692");
     }
 
 }

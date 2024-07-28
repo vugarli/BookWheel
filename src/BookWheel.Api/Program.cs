@@ -18,6 +18,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,9 +57,10 @@ builder.Services.AddSwaggerGen(c =>
             },
             new string[]{}
         }
-    }
-
-    );
+    });
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
 });
 
 
@@ -133,6 +135,9 @@ options.Filters.Add(new ExceptionFilter())
 
 var app = builder.Build();
 
+app.MapGet("/health",()=>"Good");
+
+
 app.UseSerilogRequestLogging();
 
 // Configure the HTTP request pipeline.
@@ -161,6 +166,7 @@ try
     {
         var dbContextData = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         var dbContextIdentity = serviceScope.ServiceProvider.GetRequiredService<ApplicationIdentityDbContext>();
+
         var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
 
 

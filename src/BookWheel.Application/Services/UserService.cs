@@ -25,7 +25,7 @@ namespace BookWheel.Application.Services
 
         public async Task<bool> CreateCustomerUserAsync(Guid Id, string email)
         {
-            var customer = new CustomerUserRoot(Id, email, email, email);
+            var customer = new CustomerUserRoot(Id, email, email, email,"+994518209692");
             
             await UserRepository.CreateCustomerAsync(customer);
             
@@ -34,7 +34,7 @@ namespace BookWheel.Application.Services
 
         public async Task<bool> CreateOwnerUserAsync(Guid Id,string email)
         {
-            var owner = new OwnerUserRoot(Id,email,email,email);
+            var owner = new OwnerUserRoot(Id,email,email,email, "+994518209692");
 
             await UserRepository.CreateOwnerAsync(owner);
             

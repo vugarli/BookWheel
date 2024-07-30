@@ -1,30 +1,72 @@
-version: '3.1'
 services:
-  api-service:
-    #image: satisfiedblackhole/bookwheelapi
-    build: .
+  # api-service:
+  #   #image: satisfiedblackhole/bookwheelapi
+  #   build: .
+  #   ports:
+  #     - 8080:8080
+  #     - 443:443
+  #   depends_on:
+  #     - "sqlserver"
+  #   environment:
+  #     ConnectionStrings__MSSQL: ${cnstring}
+  #     EmailClient: papercut
+  # sqlserver:
+  #   image: mcr.microsoft.com/mssql/server:2019-latest
+  #   ports:
+  #     - 1433:1433
+  #   environment:
+  #     ACCEPT_EULA: Y
+  #     MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+  #     MSSQL_PID: Developer
+  #   volumes:
+  #     - "./data/:/var/opt/mssql/data/"
+  #     - "./log/:/var/opt/mssql/log/"
+  #     - "./secrets/:/var/opt/mssql/secrets/"
+  # papercut:
+  #   image: jijiechen/papercut:latest
+  #   ports:
+  #     - 25:25
+  #     - 37408:37408
+  imageprocessor:
+    build:
+      context: ./ImageProcessor
     ports:
       - 8080:8080
       - 443:443
+    environment:
+      PROCESSING__QUALITY: 10 
+      PROCESSING__TARGET: images
+      PROCESSING__SRC: landingimages
+      MINIO__ENDPOINT: ${minio_endpoint}
+      MINIO__ACCESS_KEY: ${minio_access}
+      MINIO__SECRET_KEY: ${minio_secret}
+  minio:
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${minio_rootuser}
+      MINIO_ROOT_PASSWORD: ${minio_rootuser_pass}
+    ports:
+      - 9000:9000
+      - 9001:9001
+  createbuckets:
+    build:
+      context: .
+      target: minioconfigurer
+    environment:
+      MINIO_ROOT_USER: ${minio_rootuser}
+      MINIO_ROOT_PASS: ${minio_rootuser_pass}
+      MINIO_UPLOADER_USER: ${minio_uploaderuser}
+      MINIO_UPLOADER_USER_ACCESS: ${minio_uploaderuser_access}
+      MINIO_UPLOADER_PASSWORD: ${minio_uploaderuser_pass}
+      MINIO_PROCESSOR_USER: ${minio_processoruser}
+      MINIO_PROCESSOR_USER_ACCESS: ${minio_processoruser_access}
+      MINIO_PROCESSOR_PASSWORD: ${minio_processoruser_pass}
+      PROCESSING_WEBHOOK_ENDPOINT: ${processing_webhook_endpoint}
+    tty: true
     depends_on:
-      - "sqlserver"
-    environment:
-      ConnectionStrings__MSSQL: ${cnstring}
-      EmailClient: papercut
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    ports:
-      - 1433:1433
-    environment:
-      ACCEPT_EULA: Y
-      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
-      MSSQL_PID: Developer
+      - minio
+    entrypoint: >
+      /bin/bash minioconfig.sh
     volumes:
-      - "./data/:/var/opt/mssql/data/"
-      - "./log/:/var/opt/mssql/log/"
-      - "./secrets/:/var/opt/mssql/secrets/"
-  papercut:
-    image: jijiechen/papercut:latest
-    ports:
-      - 25:25
-      - 37408:37408
+      - "./data:/data"
